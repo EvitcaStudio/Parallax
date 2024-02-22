@@ -25,19 +25,23 @@ class ParallaxSingleton {
     instanceWeakMap = new WeakMap();
     /**
      * Adds an instance to the parallax system.
+     * Call this first and then add your instance to the map.
      * @param {Object} pInstance - The instance to add to the parallax system.
      * @param {Object} pParallaxInfo - The parallax info that tells this module how to control this instance.
      * @property {number} pParallaxInfo.x - The x multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 1 to move with camera.
      * @property {number} pParallaxInfo.y - The y multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 1 to move with camera.
      * @property {boolean} pParallaxInfo.loop - Whether this instance will loop endlessly.
+     * @param {number} pX - The x position this instance will start at.
+     * @param {number} pY - The y position this instance will start at.
+     * @param {string} pMap - The map this instance will start at.
      */
-    add(pInstance, pParallaxInfo) {
+    add(pInstance, pParallaxInfo, pX, pY, pMap) {
         if (pInstance) {
             if (pParallaxInfo instanceof Object) {
                 if (!this.instances.includes(pInstance)) {
                     // Clone the parallax object
                     const parallaxInfo = { ...pParallaxInfo };
-                    this.init(pInstance, parallaxInfo);
+                    this.init(pInstance, parallaxInfo, pX, pY, pMap);
                     // Set the parallax info to the instance
                     this.instanceWeakMap.set(pInstance, parallaxInfo);
                     this.instances.push(pInstance);
@@ -56,12 +60,15 @@ class ParallaxSingleton {
      * @property {number} pParallaxInfo.x - The x multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 1 to move with camera.
      * @property {number} pParallaxInfo.y - The y multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 1 to move with camera.
      * @property {boolean} pParallaxInfo.loop - Whether this instance will loop endlessly.
+     * @param {number} pX - The x position this parallax will start at.
+     * @param {number} pY - The y position this parallax will start at.
+     * @param {string} pMap - The map this instance will start at.
      * @private
      */
-    init(pInstance, pParallaxInfo) {
+    init(pInstance, pParallaxInfo, pX, pY, pMap) {
         if (VYLO) {
-            // Set the initial position. The instance MUST be on the map before Parallax.add is called.
-            pParallaxInfo._initialPos = { x: pInstance.x, y: pInstance.y };
+            // Set the initial position.
+            pParallaxInfo._initialPos = { x: pX, y: pY };
             // If this instance is set to loop, then it needs a left and right clone
             if (pParallaxInfo.loop) {
                 // Create a left and right clone
@@ -71,17 +78,17 @@ class ParallaxSingleton {
                 left.setAppearance(pInstance);
                 right.setAppearance(pInstance);
                 // Position the left clone
-                left.x = pInstance.x - pInstance.icon.width;
-                left.y = pInstance.y;
+                left.x = pParallaxInfo._initialPos.x - pInstance.icon.width;
+                left.y = pParallaxInfo._initialPos.y;
                 // Position the right clone
-                right.x = pInstance.x + pInstance.icon.width;
-                right.y = pInstance.y;
+                right.x = pParallaxInfo._initialPos.x + pInstance.icon.width;
+                right.y = pParallaxInfo._initialPos.y;
                 // Store the clones in a temporary array
                 const children = [left, right];
                 // Loop the clones and store their relative positions to the main instance
                 children.forEach((pChild) => {
-                    pChild.relativeX = pChild.x - pInstance.x;
-                    pChild.relativeY = pChild.y - pInstance.y;
+                    pChild.relativeX = pChild.x - pParallaxInfo._initialPos.x;
+                    pChild.relativeY = pChild.y - pParallaxInfo._initialPos.y;
                 });
                 // When the main instance moves, move the clones with their relative position to it.
                 pInstance.onRelocated = function(pX, pY) {
@@ -93,6 +100,9 @@ class ParallaxSingleton {
                     });
                 }
             }
+            pInstance.x = pX;
+            pInstance.y = pY;
+            pInstance.mapName = pMap;
         } else {
             this.logger.prefix('Parallax-Module').error('VYLO not found! This module depends on the VYLO object being in the global name space.');
         }
