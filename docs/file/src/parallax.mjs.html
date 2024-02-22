@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/parallax.mjs | Parallax</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  <script src="script/manual.js"></script>
+<meta name="description" content="A parallax module that will enable effortless integration of depth effects into your game."><meta property="twitter:card" content="summary"><meta property="twitter:title" content="Parallax"><meta property="twitter:description" content="A parallax module that will enable effortless integration of depth effects into your game."><meta property="twitter:image" content="./evitcastudio_round_branding.png"></head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./" style="display: flex; align-items: center;"><img src="./image/brand_logo.png" style="width:34px;"></a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+<a style="position:relative; top:3px;" href="https://github.com/EvitcaStudio/Parallax"><img width="20px" src="./image/github.png"></a></header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/parallax.mjs~ParallaxSingleton.html">ParallaxSingleton</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Parallax">Parallax</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/parallax.mjs</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { Logger } from &apos;./vendor/logger.min.mjs&apos;;
+
+class ParallaxSingleton {
+	/**
+	 * The version of the module.
+	 */
+	version = &quot;VERSION_REPLACE_ME&quot;;
+    /** The logger module this module uses to log errors / logs
+     * @private
+     * @type {Object}
+     */
+    logger = new Logger();
+	constructor() {
+        this.logger.registerType(&apos;Parallax-Module&apos;, &apos;#ff6600&apos;);
+	}
+    /**
+     * An array of instances that use the parallax system.
+     * @type {Array}
+     */
+    instances = [];
+    /**
+     * Weakmap to store info on instances used in this module.
+     * @type {WeakMap}
+     */
+    instanceWeakMap = new WeakMap();
+    /**
+     * Adds an instance to the parallax system.
+     * @param {Object} pInstance - The instance to add to the parallax system.
+     * @param {Object} pParallaxInfo - The parallax info that tells this module how to control this instance.
+     * @property {number} pParallaxInfo.x - The x multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 1 to move with camera.
+     * @property {number} pParallaxInfo.y - The y multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 1 to move with camera.
+     * @property {boolean} pParallaxInfo.loop - Whether this instance will loop endlessly.
+     */
+    add(pInstance, pParallaxInfo) {
+        if (pInstance) {
+            if (pParallaxInfo instanceof Object) {
+                if (!this.instances.includes(pInstance)) {
+                    // Clone the parallax object
+                    const parallaxInfo = { ...pParallaxInfo };
+                    this.init(pInstance, parallaxInfo);
+                    // Set the parallax info to the instance
+                    this.instanceWeakMap.set(pInstance, parallaxInfo);
+                    this.instances.push(pInstance);
+                }
+            } else {
+                this.logger.prefix(&apos;Parallax-Module&apos;).error(&apos;No pParallaxInfo passed or invalid type found!&apos;);
+            }
+        } else {
+            this.logger.prefix(&apos;Parallax-Module&apos;).error(&apos;No pInstance passed!&apos;);
+        }
+    }
+    /**
+     * Initializes this instance.
+     * @param {Object} pInstance - The instance to initialize.
+     * @param {Object} pParallaxInfo - The parallax info that tells this module how to control this instance.
+     * @property {number} pParallaxInfo.x - The x multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 1 to move with camera.
+     * @property {number} pParallaxInfo.y - The y multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 1 to move with camera.
+     * @property {boolean} pParallaxInfo.loop - Whether this instance will loop endlessly.
+     * @private
+     */
+    init(pInstance, pParallaxInfo) {
+        if (VYLO) {
+            // Set the initial position. The instance MUST be on the map before Parallax.add is called.
+            pParallaxInfo._initialPos = { x: pInstance.x, y: pInstance.y };
+            // If this instance is set to loop, then it needs a left and right clone
+            if (pParallaxInfo.loop) {
+                // Create a left and right clone
+                const left = VYLO.newDiob(&apos;Particle&apos;);
+                const right = VYLO.newDiob(&apos;Particle&apos;);
+                // Make the left and right clone particle look the same as the initial instance
+                left.setAppearance(pInstance);
+                right.setAppearance(pInstance);
+                // Position the left clone
+                left.x = pInstance.x - pInstance.icon.width;
+                left.y = pInstance.y;
+                // Position the right clone
+                right.x = pInstance.x + pInstance.icon.width;
+                right.y = pInstance.y;
+                // Store the clones in a temporary array
+                const children = [left, right];
+                // Loop the clones and store their relative positions to the main instance
+                children.forEach((pChild) =&gt; {
+                    pChild.relativeX = pChild.x - pInstance.x;
+                    pChild.relativeY = pChild.y - pInstance.y;
+                });
+                // When the main instance moves, move the clones with their relative position to it.
+                pInstance.onRelocated = function(pX, pY) {
+                    // Update the children&apos;s position when the parent moves
+                    children.forEach((pChild) =&gt; {
+                        pChild.x = this.x + pChild.relativeX;
+                        pChild.y = this.y + pChild.relativeY;
+                        pChild.mapName = this.mapName;
+                    });
+                }
+            }
+        } else {
+            this.logger.prefix(&apos;Parallax-Module&apos;).error(&apos;VYLO not found! This module depends on the VYLO object being in the global name space.&apos;);
+        }
+    }
+    /**
+     * Removes an instance to the parallax system.
+     * @param {Object} pInstance - The instance to remove to the parallax system.
+     */
+    remove(pInstance) {
+        if (pInstance) {
+            if (this.instances.includes(pInstance)) {
+                this.instances.splice(this.instances.indexOf(pInstance), 1);
+            }
+        } else {
+            this.logger.prefix(&apos;Parallax-Module&apos;).error(&apos;No pInstance passed!&apos;);
+        }
+    }
+    /**
+     * Updates the parallax system
+     * @param {number} pCameraX - The x position of the camera.
+     * @param {number} pCameraY - The y position of the camera.
+     */
+    update(pCameraX = 0, pCameraY = 0) {
+        for (const instance of this.instances) {
+            const parallaxInfo = this.instanceWeakMap.get(instance);
+            // How far we moved from the start point
+            const distX = pCameraX * parallaxInfo.x;
+            const distY = pCameraY * parallaxInfo.y;
+            // Position to set the instance to
+            let x = parallaxInfo._initialPos.x + distX;
+            let y = parallaxInfo._initialPos.y + distY;
+            // Move the instance with the camera if the parallax is set to 1
+            if (parallaxInfo.x === 1) {
+                x = pCameraX - instance.icon.width / 2;
+            }
+            // Move the instance with the camera if the parallax is set to 1
+            if (parallaxInfo.y === 1) {
+                y = pCameraY - instance.icon.height / 2;
+            }
+
+            // Set the position
+            instance.x = x;
+            instance.y = y;
+
+            if (parallaxInfo.loop) {
+                if (parallaxInfo.x !== 1) {
+                    // How far we moved relative to the camera
+                    const relativeX = pCameraX * (1 - parallaxInfo.x);
+                    // The start pos + total width
+                    const endX = parallaxInfo._initialPos.x + instance.icon.width;
+                    // The start pos - total width / 2
+                    const negativeEndX = parallaxInfo._initialPos.x - instance.icon.width / 2;
+                    if (relativeX &gt; endX) {
+                        parallaxInfo._initialPos.x += instance.icon.width;
+                    } else if (relativeX &lt; negativeEndX) {
+                        parallaxInfo._initialPos.x -= instance.icon.width;
+                    }
+                }
+            }
+        }        
+    }
+}
+
+const Parallax = new ParallaxSingleton();
+export { Parallax };</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

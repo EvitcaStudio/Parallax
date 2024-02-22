@@ -1,0 +1,28 @@
+{
+  "name": "parallax",
+  "version": "1.0.0",
+  "description": "A parallax module that will enable effortless integration of depth effects into your game.",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx webpack && npm run build:minify && node add-version-script.js && node add-banner-script.js",
+    "build:minify": "uglifyjs dist/parallax.min.mjs -m -c --comments -o dist/parallax.min.mjs",
+    "build:prod": "npx webpack --mode production && npm run build:minify && node add-version-script.js && node add-banner-script.js && npm run build:docs",
+    "build:docs": "esdoc -c esdoc.json"
+  },
+  "keywords": [],
+  "author": "https://github.com/doubleactii",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EvitcaStudio/Parallax"
+  },
+  "devDependencies": {
+    "esdoc": "^1.1.0",
+    "esdoc-ecmascript-proposal-plugin": "^1.0.0",
+    "esdoc-standard-plugin": "^1.0.0",
+    "uglify-js": "^3.17.4",
+    "webpack": "^5.90.3",
+    "webpack-cli": "^5.1.4"
+  }
+}
