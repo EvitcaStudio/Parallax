@@ -4,6 +4,7 @@ module.exports = {
     entry: {
       parallax: './src/parallax.mjs',
     },
+    devtool: 'source-map',
     output: {
       filename: '[name].min.mjs',
       path: path.resolve(__dirname, 'dist'),

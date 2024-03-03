@@ -69,17 +69,20 @@ class ParallaxSingleton {
      * @property {number} pParallaxInfo.x - The x multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 1 to move with camera.
      * @property {number} pParallaxInfo.y - The y multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 1 to move with camera.
      * @property {boolean} pParallaxInfo.loop - Whether this instance will loop endlessly.
-     * @param {number} pX - The x position this instance will start at.
-     * @param {number} pY - The y position this instance will start at.
-     * @param {string} pMap - The map this instance will start at.
+     * @param {number} [pX] - The x position this instance will start at.
+     * @param {number} [pY] - The y position this instance will start at.
+     * @param {string} [pMap] - The map this instance will start at.
      */
     add(pInstance, pParallaxInfo, pX, pY, pMap) {
         if (pInstance) {
             if (pParallaxInfo instanceof Object) {
                 if (!this.instances.includes(pInstance)) {
+                    const x = typeof(pX) === &apos;number&apos; ? pX : pInstance.x;
+                    const y = typeof(pY) === &apos;number&apos; ? pY : pInstance.y;
+                    const map = typeof(pMap) === &apos;string&apos; ? pMap : pInstance.mapName;
                     // Clone the parallax object
                     const parallaxInfo = { ...pParallaxInfo };
-                    this.init(pInstance, parallaxInfo, pX, pY, pMap);
+                    this.init(pInstance, parallaxInfo, x, y, map);
                     // Set the parallax info to the instance
                     this.instanceWeakMap.set(pInstance, parallaxInfo);
                     this.instances.push(pInstance);
