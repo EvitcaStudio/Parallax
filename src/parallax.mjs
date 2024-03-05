@@ -71,7 +71,7 @@ class ParallaxSingleton {
     init(pInstance, pParallaxInfo, pX, pY, pMap) {
         if (VYLO) {
             // Set the initial position.
-            pParallaxInfo._initialPos = { x: pX, y: pY };
+            pParallaxInfo.initialPos = { x: pX, y: pY };
             // If this instance is set to loop, then it needs a left and right clone
             if (pParallaxInfo.loop) {
                 // Create a left and right clone
@@ -81,17 +81,17 @@ class ParallaxSingleton {
                 left.setAppearance(pInstance);
                 right.setAppearance(pInstance);
                 // Position the left clone
-                left.x = pParallaxInfo._initialPos.x - pInstance.icon.width;
-                left.y = pParallaxInfo._initialPos.y;
+                left.x = pX - pInstance.icon.width;
+                left.y = pY;
                 // Position the right clone
-                right.x = pParallaxInfo._initialPos.x + pInstance.icon.width;
-                right.y = pParallaxInfo._initialPos.y;
+                right.x = pX + pInstance.icon.width;
+                right.y = pY;
                 // Store the clones in a temporary array
                 const children = [left, right];
                 // Loop the clones and store their relative positions to the main instance
                 children.forEach((pChild) => {
-                    pChild.relativeX = pChild.x - pParallaxInfo._initialPos.x;
-                    pChild.relativeY = pChild.y - pParallaxInfo._initialPos.y;
+                    pChild.relativeX = pChild.x - pX;
+                    pChild.relativeY = pChild.y - pY;
                 });
                 // When the main instance moves, move the clones with their relative position to it.
                 pInstance.onRelocated = function(pX, pY) {
@@ -127,16 +127,19 @@ class ParallaxSingleton {
      * Updates the parallax system
      * @param {number} pCameraX - The x position of the camera.
      * @param {number} pCameraY - The y position of the camera.
+     * @param {number} pSimulatedPosition - The simulated position. This is used to simulate a position larger than possible, but internally it treats it as its downscaled position.
+     * One such reason for using this paramater would be to simulate a map larger than you actually have, to convince the parallax that it is infinite.
      */
-    update(pCameraX = 0, pCameraY = 0) {
+    update(pCameraX = 0, pCameraY = 0, pSimulatedPosition) {
         for (const instance of this.instances) {
             const parallaxInfo = this.instanceWeakMap.get(instance);
             // How far we moved from the start point
             const distX = pCameraX * parallaxInfo.x;
             const distY = pCameraY * parallaxInfo.y;
             // Position to set the instance to
-            let x = parallaxInfo._initialPos.x + distX;
-            let y = parallaxInfo._initialPos.y + distY;
+            let x = parallaxInfo.initialPos.x + (pSimulatedPosition ? distX - pSimulatedPosition : distX);
+            let y = parallaxInfo.initialPos.y + distY;
+            
             // Move the instance with the camera if the parallax is set to 1
             if (parallaxInfo.x === 1) {
                 x = pCameraX - instance.icon.width / 2;
@@ -155,13 +158,13 @@ class ParallaxSingleton {
                     // How far we moved relative to the camera
                     const relativeX = pCameraX * (1 - parallaxInfo.x);
                     // The start pos + total width
-                    const endX = parallaxInfo._initialPos.x + instance.icon.width;
+                    const endX = parallaxInfo.initialPos.x + instance.icon.width;
                     // The start pos - total width / 2
-                    const negativeEndX = parallaxInfo._initialPos.x - instance.icon.width / 2;
+                    const negativeEndX = parallaxInfo.initialPos.x - instance.icon.width / 2;
                     if (relativeX > endX) {
-                        parallaxInfo._initialPos.x += instance.icon.width;
+                        parallaxInfo.initialPos.x += instance.icon.width;
                     } else if (relativeX < negativeEndX) {
-                        parallaxInfo._initialPos.x -= instance.icon.width;
+                        parallaxInfo.initialPos.x -= instance.icon.width;
                     }
                 }
             }
