@@ -132,21 +132,36 @@ class ParallaxSingleton {
      */
     update(pCameraX = 0, pCameraY = 0, pSimulatedPosition) {
         for (const instance of this.instances) {
+            /**
+             * The camera's x position. May be adjusted if pSimulatedPosition is used.
+             * @type {number}
+             */
+            let cameraX = pCameraX;
+            /**
+             * The camera's x position. May be adjusted if pSimulatedPosition is used.
+             * @type {number}
+             */
+            let cameraY = pCameraY;
+
             const parallaxInfo = this.instanceWeakMap.get(instance);
             // How far we moved from the start point
-            const distX = pCameraX * parallaxInfo.x;
-            const distY = pCameraY * parallaxInfo.y;
-            // Position to set the instance to
-            let x = parallaxInfo.initialPos.x + (pSimulatedPosition ? distX - pSimulatedPosition : distX);
+            const distX = cameraX * parallaxInfo.x;
+            const distY = cameraY * parallaxInfo.y;
+
+            // Position to set the instance to. We take into account the simulated posiiton if it is passed.
+            let x = parallaxInfo.initialPos.x + (typeof(pSimulatedPosition) === 'number' ? distX - pSimulatedPosition : distX);
             let y = parallaxInfo.initialPos.y + distY;
             
             // Move the instance with the camera if the parallax is set to 1
             if (parallaxInfo.x === 1) {
-                x = pCameraX - instance.icon.width / 2;
+                if (typeof(pSimulatedPosition) === 'number') {
+                    cameraX = distX - pSimulatedPosition;
+                }
+                x = cameraX - instance.icon.width / 2;
             }
             // Move the instance with the camera if the parallax is set to 1
             if (parallaxInfo.y === 1) {
-                y = pCameraY - instance.icon.height / 2;
+                y = cameraY - instance.icon.height / 2;
             }
 
             // Set the position
@@ -156,7 +171,7 @@ class ParallaxSingleton {
             if (parallaxInfo.loop) {
                 if (parallaxInfo.x !== 1) {
                     // How far we moved relative to the camera
-                    const relativeX = pCameraX * (1 - parallaxInfo.x);
+                    const relativeX = cameraX * (1 - parallaxInfo.x);
                     // The start pos + total width
                     const endX = parallaxInfo.initialPos.x + instance.icon.width;
                     // The start pos - total width / 2
