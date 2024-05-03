@@ -17,12 +17,6 @@ import { Parallax } from './parallax.mjs';
 window.ParallaxBundle.Parallax;
 ```
 
-### CommonJS (CJS) Module
-
-```js
-const { Parallax } = require('./parallax.cjs.js');
-```
-
 ### Global Dependency
 
 Parallax relies on the `VYLO` variable being globally accessible.

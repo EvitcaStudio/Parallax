@@ -967,7 +967,7 @@
   },
   {
     "kind": "index",
-    "content": "# Parallax Module \r\nA parallax module that will enable effortless integration of depth effects into your game.\r\n\r\n## Installation\r\n\r\n### ES Module\r\n\r\n```js\r\nimport { Parallax } from './parallax.mjs';\r\n```\r\n\r\n### IIFE (Immediately Invoked Function Expression)\r\n\r\n```js\r\n<script src=\"parallax.js\"></script>;\r\n// ...\r\nwindow.ParallaxBundle.Parallax;\r\n```\r\n\r\n### CommonJS (CJS) Module\r\n\r\n```js\r\nconst { Parallax } = require('./parallax.cjs.js');\r\n```\r\n\r\n### Global Dependency\r\n\r\nParallax relies on the `VYLO` variable being globally accessible.\r\n",
+    "content": "# Parallax Module \r\nA parallax module that will enable effortless integration of depth effects into your game.\r\n\r\n## Installation\r\n\r\n### ES Module\r\n\r\n```js\r\nimport { Parallax } from './parallax.mjs';\r\n```\r\n\r\n### IIFE (Immediately Invoked Function Expression)\r\n\r\n```js\r\n<script src=\"parallax.js\"></script>;\r\n// ...\r\nwindow.ParallaxBundle.Parallax;\r\n```\r\n\r\n### Global Dependency\r\n\r\nParallax relies on the `VYLO` variable being globally accessible.\r\n",
     "longname": "C:\\Users\\jared\\Documents\\Github\\Parallax\\README.md",
     "name": "./README.md",
     "static": true,
