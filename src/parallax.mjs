@@ -49,6 +49,10 @@ class ParallaxSingleton {
                     const map = typeof(pMap) === 'string' ? pMap : pInstance.mapName;
                     // Clone the parallax object
                     const parallaxInfo = { ...pParallaxInfo };
+                    parallaxInfo.lastCamPos = {
+                        x: VYLO.Client.getViewEye().x,
+                        y: VYLO.Client.getViewEye().y
+                    }
                     this.init(pInstance, parallaxInfo, x, y, map);
                     // Set the parallax info to the instance
                     this.instanceWeakMap.set(pInstance, parallaxInfo);
@@ -75,8 +79,6 @@ class ParallaxSingleton {
      */
     init(pInstance, pParallaxInfo, pX, pY, pMap) {
         if (VYLO) {
-            // Set the initial position.
-            pParallaxInfo.initialPos = { x: pX, y: pY };
             // If this instance is set to loop, then it needs a left and right clone
             if (pParallaxInfo.loop) {
                 // Create a left and right clone
@@ -137,35 +139,33 @@ class ParallaxSingleton {
      */
     update(pCameraX = 0, pCameraY = 0, pSimulatedPosition) {
         for (const instance of this.instances) {
-            /**
-             * The camera's x position. May be adjusted if pSimulatedPosition is used.
-             * @type {number}
-             */
+            // The camera's x position. May be adjusted if pSimulatedPosition is used.
             let cameraX = pCameraX;
-            /**
-             * The camera's x position. May be adjusted if pSimulatedPosition is used.
-             * @type {number}
-             */
+            // The camera's x position. May be adjusted if pSimulatedPosition is used.
             let cameraY = pCameraY;
 
             const parallaxInfo = this.instanceWeakMap.get(instance);
-            // How far we moved from the start point
-            const distX = cameraX * parallaxInfo.x;
-            const distY = cameraY * parallaxInfo.y;
 
-            // Position to set the instance to. We take into account the simulated posiiton if it is passed.
-            let x = parallaxInfo.initialPos.x + (typeof(pSimulatedPosition) === 'number' ? distX - pSimulatedPosition : distX);
-            let y = parallaxInfo.initialPos.y + distY;
-            
-            // Move the instance with the camera if the parallax is set to 1
-            if (parallaxInfo.x === 1) {
-                if (typeof(pSimulatedPosition) === 'number') {
-                    cameraX = distX - pSimulatedPosition;
-                }
+            // Move the instance with the camera if the parallax is set to 0
+            const isBackgroundX = parallaxInfo.x === 0;
+            const isBackgroundY = parallaxInfo.y === 0;
+
+            const deltaX = cameraX - parallaxInfo.lastCamPos.x;
+            const deltaY = cameraY - parallaxInfo.lastCamPos.y;
+
+            // How far we moved from the start point
+            const distX = deltaX * parallaxInfo.x;
+            const distY = deltaY * parallaxInfo.y;
+
+            // Position to set the instance to.
+            let x = instance.x + distX;
+            let y = instance.y + distY;
+
+            // Hard code in static backgrounds
+            if (isBackgroundX) {
                 x = cameraX - instance.icon.width / 2;
             }
-            // Move the instance with the camera if the parallax is set to 1
-            if (parallaxInfo.y === 1) {
+            if (isBackgroundY) {
                 y = cameraY - instance.icon.height / 2;
             }
 
@@ -173,22 +173,24 @@ class ParallaxSingleton {
             instance.x = x;
             instance.y = y;
 
+            parallaxInfo.lastCamPos.x = cameraX;
+            parallaxInfo.lastCamPos.y = cameraY;
+
             if (parallaxInfo.loop) {
-                if (parallaxInfo.x !== 1) {
-                    // How far we moved relative to the camera
-                    const relativeX = cameraX * (1 - parallaxInfo.x);
+                // Logic cannot be ran on background instances as they should not loop
+                if (!isBackgroundX && !isBackgroundY) {
                     // The start pos + total width
-                    const endX = parallaxInfo.initialPos.x + instance.icon.width;
+                    const rightEnd = instance.x + instance.icon.width;
                     // The start pos - total width / 2
-                    const negativeEndX = parallaxInfo.initialPos.x - instance.icon.width / 2;
-                    if (relativeX > endX) {
-                        parallaxInfo.initialPos.x += instance.icon.width;
-                    } else if (relativeX < negativeEndX) {
-                        parallaxInfo.initialPos.x -= instance.icon.width;
+                    const leftEnd = instance.x - instance.icon.width / 6;
+                    if (cameraX > rightEnd) {
+                        instance.x += instance.icon.width;
+                    } else if (cameraX < leftEnd) {
+                        instance.x -= instance.icon.width;
                     }
                 }
             }
-        }        
+        }
     }
 }
 
