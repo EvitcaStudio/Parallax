@@ -29,6 +29,15 @@ class ParallaxSingleton {
      */
     instanceWeakMap = new WeakMap();
     /**
+     * The last position of the camera.
+     * @private
+     * @type {Object}
+     */
+    lastCamPos = { 
+        x: 0,
+        y: 0
+    }
+    /**
      * Adds an instance to the parallax system.
      * Call this first and then add your instance to the map.
      * @param {Object} pInstance - The instance to add to the parallax system.
@@ -49,10 +58,6 @@ class ParallaxSingleton {
                     const map = typeof(pMap) === 'string' ? pMap : pInstance.mapName;
                     // Clone the parallax object
                     const parallaxInfo = { ...pParallaxInfo };
-                    parallaxInfo.lastCamPos = {
-                        x: VYLO.Client.getViewEye().x,
-                        y: VYLO.Client.getViewEye().y
-                    }
                     this.init(pInstance, parallaxInfo, x, y, map);
                     // Set the parallax info to the instance
                     this.instanceWeakMap.set(pInstance, parallaxInfo);
@@ -110,9 +115,17 @@ class ParallaxSingleton {
                     });
                 }
             }
-            pInstance.x = pX;
-            pInstance.y = pY;
-            pInstance.mapName = pMap;
+            const viewEye = VYLO.Client.getViewEye();
+            let lastCamX = 0;
+            let lastCamY = 0;
+            if (viewEye) {
+                lastCamX = viewEye.x;
+                lastCamY = viewEye.y;
+            }
+            this.lastCamPos.x = lastCamX;
+            this.lastCamPos.y = lastCamY;
+            pInstance.setPos(0, 0, pMap);
+            pInstance.setPos(pX, pY, pMap);
         } else {
             this.logger.prefix('Parallax-Module').error('VYLO not found! This module depends on the VYLO object being in the global name space.');
         }
@@ -131,54 +144,51 @@ class ParallaxSingleton {
         }
     }
     /**
-     * Updates the parallax system
+     * Updates the parallax system.
      * @param {number} pCameraX - The x position of the camera.
      * @param {number} pCameraY - The y position of the camera.
      * @param {number} pSimulatedPosition - The simulated position. This is used to simulate a position larger than possible, but internally it treats it as its downscaled position.
      * One such reason for using this paramater would be to simulate a map larger than you actually have, to convince the parallax that it is infinite.
      */
     update(pCameraX = 0, pCameraY = 0, pSimulatedPosition) {
+        // The camera's x position. May be adjusted if pSimulatedPosition is used.
+        let cameraX = pCameraX;
+        // The camera's x position. May be adjusted if pSimulatedPosition is used.
+        let cameraY = pCameraY;
         for (const instance of this.instances) {
-            // The camera's x position. May be adjusted if pSimulatedPosition is used.
-            let cameraX = pCameraX;
-            // The camera's x position. May be adjusted if pSimulatedPosition is used.
-            let cameraY = pCameraY;
-
             const parallaxInfo = this.instanceWeakMap.get(instance);
 
             // Move the instance with the camera if the parallax is set to 0
             const isBackgroundX = parallaxInfo.x === 0;
             const isBackgroundY = parallaxInfo.y === 0;
 
-            const deltaX = cameraX - parallaxInfo.lastCamPos.x;
-            const deltaY = cameraY - parallaxInfo.lastCamPos.y;
-
-            // How far we moved from the start point
-            const distX = deltaX * parallaxInfo.x;
-            const distY = deltaY * parallaxInfo.y;
-
             // Position to set the instance to.
-            let x = instance.x + distX;
-            let y = instance.y + distY;
+            let x;
+            let y;
 
-            // Hard code in static backgrounds
             if (isBackgroundX) {
                 x = cameraX - instance.icon.width / 2;
+            } else {
+                let deltaX = cameraX - this.lastCamPos.x;
+                let distX = deltaX * parallaxInfo.x;
+                x = instance.x + distX;
             }
+
             if (isBackgroundY) {
                 y = cameraY - instance.icon.height / 2;
+            } else {
+                let deltaY = cameraY - this.lastCamPos.y;
+                let distY = deltaY * parallaxInfo.y;
+                y = instance.y + distY;
             }
 
             // Set the position
             instance.x = x;
             instance.y = y;
-
-            parallaxInfo.lastCamPos.x = cameraX;
-            parallaxInfo.lastCamPos.y = cameraY;
-
-            if (parallaxInfo.loop) {
-                // Logic cannot be ran on background instances as they should not loop
-                if (!isBackgroundX && !isBackgroundY) {
+            
+            // Logic cannot be ran on background instances as they should not loop
+            if (!isBackgroundX && !isBackgroundY) {
+                if (parallaxInfo.loop) {
                     // The start pos + total width
                     const rightEnd = instance.x + instance.icon.width;
                     // The start pos - total width / 2
@@ -191,6 +201,8 @@ class ParallaxSingleton {
                 }
             }
         }
+        this.lastCamPos.x = cameraX;
+        this.lastCamPos.y = cameraY;
     }
 }
 

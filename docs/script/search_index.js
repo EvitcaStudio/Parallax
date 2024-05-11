@@ -330,6 +330,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/parallax.mjs~parallaxsingleton#lastcampos",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-member-lastCamPos",
+    "src/parallax.mjs~ParallaxSingleton#lastCamPos",
+    "member"
+  ],
+  [
     "src/parallax.mjs~parallaxsingleton#logger",
     "class/src/parallax.mjs~ParallaxSingleton.html#instance-member-logger",
     "src/parallax.mjs~ParallaxSingleton#logger",

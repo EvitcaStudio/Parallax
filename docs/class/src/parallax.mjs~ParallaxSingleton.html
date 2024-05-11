@@ -226,6 +226,35 @@
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/parallax.mjs~ParallaxSingleton.html#instance-member-lastCamPos">lastCamPos</a></span></span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>The last position of the camera.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">private</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/parallax.mjs~ParallaxSingleton.html#instance-member-logger">logger</a></span></span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
         </p>
       </div>
@@ -262,14 +291,13 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/parallax.mjs~ParallaxSingleton.html#instance-method-add">add</a></span></span><span class="code" data-ice="signature">(pInstance: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, pParallaxInfo: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, pX: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, pY: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, pMap: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>)</span>
+          <span class="code" data-ice="name"><span><a href="class/src/parallax.mjs~ParallaxSingleton.html#instance-method-add">add</a></span></span><span class="code" data-ice="signature">(pInstance: <span>*</span>, pParallaxInfo: <span>*</span>, pX: <span>*</span>, pY: <span>*</span>, pMap: <span>*</span>)</span>
         </p>
       </div>
       <div>
         
         
-        <div data-ice="description"><p>Adds an instance to the parallax system.</p>
-</div>
+        
       </div>
     </td>
     <td>
@@ -326,7 +354,7 @@
       <div>
         
         
-        <div data-ice="description"><p>Updates the parallax system</p>
+        <div data-ice="description"><p>Updates the parallax system.</p>
 </div>
       </div>
     </td>
@@ -561,6 +589,50 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-member-lastCamPos">
+    <span class="access" data-ice="access">private</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">lastCamPos</span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/parallax.mjs.html#lineNumber36">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>The last position of the camera.</p>
+</div>
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-member-logger">
     <span class="access" data-ice="access">private</span>
     
@@ -615,20 +687,18 @@
     
     
     
-    <span class="code" data-ice="name">add</span><span class="code" data-ice="signature">(pInstance: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, pParallaxInfo: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, pX: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, pY: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, pMap: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>)</span>
+    <span class="code" data-ice="name">add</span><span class="code" data-ice="signature">(pInstance: <span>*</span>, pParallaxInfo: <span>*</span>, pX: <span>*</span>, pY: <span>*</span>, pMap: <span>*</span>)</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/parallax.mjs.html#lineNumber43">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/parallax.mjs.html#lineNumber52">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  <div data-ice="description"><p>Adds an instance to the parallax system.
-Call this first and then add your instance to the map.</p>
-</div>
+  
 
   
 
@@ -642,38 +712,33 @@ Call this first and then add your instance to the map.</p>
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">pInstance</td>
-      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
+      <td data-ice="type" class="code"><span>*</span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"><p>The instance to add to the parallax system.</p>
-</td>
+      <td data-ice="description"></td>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">pParallaxInfo</td>
-      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
+      <td data-ice="type" class="code"><span>*</span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"><p>The parallax info that tells this module how to control this instance.</p>
-</td>
+      <td data-ice="description"></td>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">pX</td>
-      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span></td>
-      <td data-ice="appendix"><ul><li>optional</li></ul></td>
-      <td data-ice="description"><p>The x position this instance will start at.</p>
-</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">pY</td>
-      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span></td>
-      <td data-ice="appendix"><ul><li>optional</li></ul></td>
-      <td data-ice="description"><p>The y position this instance will start at.</p>
-</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">pMap</td>
-      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></td>
-      <td data-ice="appendix"><ul><li>optional</li></ul></td>
-      <td data-ice="description"><p>The map this instance will start at.</p>
-</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
     </tr>
 </tbody>
   </table>
@@ -709,7 +774,7 @@ Call this first and then add your instance to the map.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/parallax.mjs.html#lineNumber124">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/parallax.mjs.html#lineNumber137">source</a></span></span>
     </span>
   </h3>
 
@@ -770,14 +835,14 @@ Call this first and then add your instance to the map.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/parallax.mjs.html#lineNumber140">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/parallax.mjs.html#lineNumber153">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  <div data-ice="description"><p>Updates the parallax system</p>
+  <div data-ice="description"><p>Updates the parallax system.</p>
 </div>
 
   
@@ -848,7 +913,7 @@ One such reason for using this paramater would be to simulate a map larger than 
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/parallax.mjs.html#lineNumber80">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/parallax.mjs.html#lineNumber85">source</a></span></span>
     </span>
   </h3>
 
