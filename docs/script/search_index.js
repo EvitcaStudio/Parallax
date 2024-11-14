@@ -1,5 +1,11 @@
 window.esdocSearchIndex = [
   [
+    "parallax/src/layer.mjs~layer",
+    "class/src/layer.mjs~Layer.html",
+    "<span>Layer</span> <span class=\"search-result-import-path\">parallax/src/layer.mjs</span>",
+    "class"
+  ],
+  [
     "parallax~parallax",
     "variable/index.html#static-variable-Parallax",
     "<span>Parallax</span> <span class=\"search-result-import-path\">parallax</span>",
@@ -294,10 +300,64 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
+    "src/layer.mjs",
+    "file/src/layer.mjs.html",
+    "src/layer.mjs",
+    "file"
+  ],
+  [
+    "src/layer.mjs~layer#add",
+    "class/src/layer.mjs~Layer.html#instance-method-add",
+    "src/layer.mjs~Layer#add",
+    "method"
+  ],
+  [
+    "src/layer.mjs~layer#config",
+    "class/src/layer.mjs~Layer.html#instance-member-config",
+    "src/layer.mjs~Layer#config",
+    "member"
+  ],
+  [
+    "src/layer.mjs~layer#constructor",
+    "class/src/layer.mjs~Layer.html#instance-constructor-constructor",
+    "src/layer.mjs~Layer#constructor",
+    "method"
+  ],
+  [
+    "src/layer.mjs~layer#remove",
+    "class/src/layer.mjs~Layer.html#instance-method-remove",
+    "src/layer.mjs~Layer#remove",
+    "method"
+  ],
+  [
+    "src/layer.mjs~layer#updateconfigspeed",
+    "class/src/layer.mjs~Layer.html#instance-method-updateConfigSpeed",
+    "src/layer.mjs~Layer#updateConfigSpeed",
+    "method"
+  ],
+  [
+    "src/layer.mjs~layer#updatehorizontalspeed",
+    "class/src/layer.mjs~Layer.html#instance-method-updateHorizontalSpeed",
+    "src/layer.mjs~Layer#updateHorizontalSpeed",
+    "method"
+  ],
+  [
+    "src/layer.mjs~layer#updateverticalspeed",
+    "class/src/layer.mjs~Layer.html#instance-method-updateVerticalSpeed",
+    "src/layer.mjs~Layer#updateVerticalSpeed",
+    "method"
+  ],
+  [
     "src/parallax.mjs",
     "file/src/parallax.mjs.html",
     "src/parallax.mjs",
     "file"
+  ],
+  [
+    "src/parallax.mjs~parallaxsingleton#layer",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-member-Layer",
+    "src/parallax.mjs~ParallaxSingleton#Layer",
+    "member"
   ],
   [
     "src/parallax.mjs~parallaxsingleton#add",
@@ -309,6 +369,12 @@ window.esdocSearchIndex = [
     "src/parallax.mjs~parallaxsingleton#constructor",
     "class/src/parallax.mjs~ParallaxSingleton.html#instance-constructor-constructor",
     "src/parallax.mjs~ParallaxSingleton#constructor",
+    "method"
+  ],
+  [
+    "src/parallax.mjs~parallaxsingleton#handleonrelocated",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-handleOnRelocated",
+    "src/parallax.mjs~ParallaxSingleton#handleOnRelocated",
     "method"
   ],
   [
