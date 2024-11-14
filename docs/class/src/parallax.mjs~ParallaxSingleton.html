@@ -29,7 +29,8 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/parallax.mjs~ParallaxSingleton.html">ParallaxSingleton</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/layer.mjs~Layer.html">Layer</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/parallax.mjs~ParallaxSingleton.html">ParallaxSingleton</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Parallax">Parallax</a></span></span></li>
 </ul>
 </div>
@@ -42,7 +43,7 @@
   
   
   
-  <span data-ice="source">| <span><a href="file/src/parallax.mjs.html#lineNumber3">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/src/parallax.mjs.html#lineNumber4">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -81,12 +82,12 @@
 
 
 <div data-ice="constructorSummary"><h2>Constructor Summary</h2><table class="summary" data-ice="summary">
-  <thead><tr><td data-ice="title" colspan="3">Private Constructor</td></tr></thead>
+  <thead><tr><td data-ice="title" colspan="3">Public Constructor</td></tr></thead>
   <tbody>
   
   <tr data-ice="target">
     <td>
-      <span class="access" data-ice="access">private</span>
+      <span class="access" data-ice="access">public</span>
       
       
       
@@ -120,6 +121,35 @@
   <tbody>
   
   <tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/parallax.mjs~ParallaxSingleton.html#instance-member-Layer">Layer</a></span></span><span class="code" data-ice="signature">: <span><a href="class/src/layer.mjs~Layer.html">Layer</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>The layer class.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
     <td>
       <span class="access" data-ice="access">public</span>
       
@@ -197,13 +227,13 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/parallax.mjs~ParallaxSingleton.html#instance-member-instances">instances</a></span></span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/parallax.mjs~ParallaxSingleton.html#instance-member-instances">instances</a></span></span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set">Set</a></span></span>
         </p>
       </div>
       <div>
         
         
-        <div data-ice="description"><p>An array of instances that use the parallax system.</p>
+        <div data-ice="description"><p>An set of instances that use the parallax system.</p>
 </div>
       </div>
     </td>
@@ -291,13 +321,43 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/parallax.mjs~ParallaxSingleton.html#instance-method-add">add</a></span></span><span class="code" data-ice="signature">(pInstance: <span>*</span>, pParallaxInfo: <span>*</span>, pX: <span>*</span>, pY: <span>*</span>, pMap: <span>*</span>)</span>
+          <span class="code" data-ice="name"><span><a href="class/src/parallax.mjs~ParallaxSingleton.html#instance-method-add">add</a></span></span><span class="code" data-ice="signature">(pInstance: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, pConfig: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, pX: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, pY: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, pMap: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>)</span>
         </p>
       </div>
       <div>
         
         
+        <div data-ice="description"><p>Adds an instance to the parallax system.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/parallax.mjs~ParallaxSingleton.html#instance-method-handleOnRelocated">handleOnRelocated</a></span></span><span class="code" data-ice="signature">(pInstance: <span>Diob </span> | <span> MapObject</span>, pChildren: <span><span>MapObject</span><span>[]</span></span>)</span>
+        </p>
+      </div>
+      <div>
         
+        
+        <div data-ice="description"><p>Handles the onRelocated event for instances.</p>
+</div>
       </div>
     </td>
     <td>
@@ -348,7 +408,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/parallax.mjs~ParallaxSingleton.html#instance-method-update">update</a></span></span><span class="code" data-ice="signature">(pCameraX: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, pCameraY: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, pSimulatedPosition: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>)</span>
+          <span class="code" data-ice="name"><span><a href="class/src/parallax.mjs~ParallaxSingleton.html#instance-method-update">update</a></span></span><span class="code" data-ice="signature">(pCameraX: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, pCameraY: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>)</span>
         </p>
       </div>
       <div>
@@ -383,7 +443,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/parallax.mjs~ParallaxSingleton.html#instance-method-init">init</a></span></span><span class="code" data-ice="signature">(pInstance: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, pParallaxInfo: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, pX: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, pY: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, pMap: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>)</span>
+          <span class="code" data-ice="name"><span><a href="class/src/parallax.mjs~ParallaxSingleton.html#instance-method-init">init</a></span></span><span class="code" data-ice="signature">(pInstance: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, pConfig: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, pX: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, pY: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, pMap: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>)</span>
         </p>
       </div>
       <div>
@@ -406,11 +466,11 @@
 
 
 
-<div data-ice="constructorDetails"><h2 data-ice="title">Private Constructors</h2>
+<div data-ice="constructorDetails"><h2 data-ice="title">Public Constructors</h2>
 
 <div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-constructor-constructor">
-    <span class="access" data-ice="access">private</span>
+    <span class="access" data-ice="access">public</span>
     
     
     
@@ -420,7 +480,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/parallax.mjs.html#lineNumber16">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/parallax.mjs.html#lineNumber43">source</a></span></span>
     </span>
   </h3>
 
@@ -455,6 +515,50 @@
 <div data-ice="memberDetails"><h2 data-ice="title">Public Members</h2>
 
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-member-Layer">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">Layer</span><span class="code" data-ice="signature">: <span><a href="class/src/layer.mjs~Layer.html">Layer</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/parallax.mjs.html#lineNumber18">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>The layer class.</p>
+</div>
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-member-version">
     <span class="access" data-ice="access">public</span>
     
@@ -466,7 +570,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/parallax.mjs.html#lineNumber7">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/parallax.mjs.html#lineNumber8">source</a></span></span>
     </span>
   </h3>
 
@@ -552,7 +656,7 @@
     
     
     
-    <span class="code" data-ice="name">instances</span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span></span>
+    <span class="code" data-ice="name">instances</span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set">Set</a></span></span>
     <span class="right-info">
       
       
@@ -563,7 +667,7 @@
   
   
   
-  <div data-ice="description"><p>An array of instances that use the parallax system.</p>
+  <div data-ice="description"><p>An set of instances that use the parallax system.</p>
 </div>
 
   
@@ -644,7 +748,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/parallax.mjs.html#lineNumber12">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/parallax.mjs.html#lineNumber13">source</a></span></span>
     </span>
   </h3>
 
@@ -687,18 +791,20 @@
     
     
     
-    <span class="code" data-ice="name">add</span><span class="code" data-ice="signature">(pInstance: <span>*</span>, pParallaxInfo: <span>*</span>, pX: <span>*</span>, pY: <span>*</span>, pMap: <span>*</span>)</span>
+    <span class="code" data-ice="name">add</span><span class="code" data-ice="signature">(pInstance: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, pConfig: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, pX: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, pY: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, pMap: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>)</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/parallax.mjs.html#lineNumber52">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/parallax.mjs.html#lineNumber64">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Adds an instance to the parallax system.
+Call this first and then add your instance to the map.</p>
+</div>
 
   
 
@@ -712,33 +818,107 @@
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">pInstance</td>
-      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>The instance to add to the parallax system.</p>
+</td>
     </tr>
 <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">pParallaxInfo</td>
-      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="name" class="code" data-depth="0">pConfig</td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>The parallax info that tells this module how to control this instance.</p>
+</td>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">pX</td>
-      <td data-ice="type" class="code"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li></ul></td>
+      <td data-ice="description"><p>The x position this instance will start at.</p>
+</td>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">pY</td>
-      <td data-ice="type" class="code"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li></ul></td>
+      <td data-ice="description"><p>The y position this instance will start at.</p>
+</td>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">pMap</td>
-      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li></ul></td>
+      <td data-ice="description"><p>The map this instance will start at.</p>
+<h2 id="the-following-is-how-the-speed-of-the-parallax-multipliers-are-factored-in-">The following is how the speed of the parallax multipliers are factored in.</h2><p>(x | y) &lt; 1 = faster behind the camera eg: (-&gt; Player goes this way = Instance goes this way &lt;-)<br>(x | y) &gt; 1 faster against the camera eg: (-&gt; Player goes this way = Instance goes this way -&gt;)<br>(x | y) = 0 = static to the camera eg: (-&gt; Player goes this way = Instance does nothing, and moves with the camera)<br>(x | y) = 1 = moves with the camera eg: (-&gt; Player goes this way = Instance goes this way -&gt; at position of camera)</p>
+</td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-handleOnRelocated">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">handleOnRelocated</span><span class="code" data-ice="signature">(pInstance: <span>Diob </span> | <span> MapObject</span>, pChildren: <span><span>MapObject</span><span>[]</span></span>)</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/parallax.mjs.html#lineNumber236">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Handles the onRelocated event for instances. Moves their children in relativity to their position.</p>
+</div>
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">pInstance</td>
+      <td data-ice="type" class="code"><span>Diob </span> | <span> MapObject</span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>The instance to handle the event for.</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">pChildren</td>
+      <td data-ice="type" class="code"><span><span>MapObject</span><span>[]</span></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"><p>An array of children belonging to the instance.</p>
+</td>
     </tr>
 </tbody>
   </table>
@@ -774,7 +954,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/parallax.mjs.html#lineNumber137">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/parallax.mjs.html#lineNumber161">source</a></span></span>
     </span>
   </h3>
 
@@ -831,11 +1011,11 @@
     
     
     
-    <span class="code" data-ice="name">update</span><span class="code" data-ice="signature">(pCameraX: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, pCameraY: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, pSimulatedPosition: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>)</span>
+    <span class="code" data-ice="name">update</span><span class="code" data-ice="signature">(pCameraX: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, pCameraY: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>)</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/parallax.mjs.html#lineNumber153">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/parallax.mjs.html#lineNumber177">source</a></span></span>
     </span>
   </h3>
 
@@ -867,14 +1047,6 @@
       <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"><p>The y position of the camera.</p>
-</td>
-    </tr>
-<tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">pSimulatedPosition</td>
-      <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"><p>The simulated position. This is used to simulate a position larger than possible, but internally it treats it as its downscaled position.
-One such reason for using this paramater would be to simulate a map larger than you actually have, to convince the parallax that it is infinite.</p>
 </td>
     </tr>
 </tbody>
@@ -909,11 +1081,11 @@ One such reason for using this paramater would be to simulate a map larger than 
     
     
     
-    <span class="code" data-ice="name">init</span><span class="code" data-ice="signature">(pInstance: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, pParallaxInfo: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, pX: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, pY: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, pMap: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>)</span>
+    <span class="code" data-ice="name">init</span><span class="code" data-ice="signature">(pInstance: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, pConfig: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, pX: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, pY: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span>, pMap: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>)</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/parallax.mjs.html#lineNumber85">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/parallax.mjs.html#lineNumber98">source</a></span></span>
     </span>
   </h3>
 
@@ -941,7 +1113,7 @@ One such reason for using this paramater would be to simulate a map larger than 
 </td>
     </tr>
 <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">pParallaxInfo</td>
+      <td data-ice="name" class="code" data-depth="0">pConfig</td>
       <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"><p>The parallax info that tells this module how to control this instance.</p>
