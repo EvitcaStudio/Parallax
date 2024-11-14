@@ -138,8 +138,15 @@ export class Layer {
      * @prop {boolean} pConfig.loop - Whether this instance will be treated as a background and loop seamlessly.
      */
     add(pInstance, pConfig) {
+        if (this.config.instances.has(pInstance)) return;
         this.config.instances.add(pInstance);
-        Parallax.add(pInstance, pConfig);
+        const config = pConfig 
+            ? pConfig
+            : {
+                x: this.config.horizontalSpeed,
+                y: this.config.verticalSpeed
+            }
+        Parallax.add(pInstance, config);
     }
     /**
      * Removes the instance from the parallax layer.
