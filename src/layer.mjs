@@ -141,11 +141,16 @@ export class Layer {
         if (this.config.instances.has(pInstance)) return;
         this.config.instances.add(pInstance);
         const config = pConfig 
-            ? pConfig
+            ? {
+                x: this.config.horizontalSpeed,
+                y: this.config.verticalSpeed,
+                loop: pConfig.loop
+            }
             : {
                 x: this.config.horizontalSpeed,
                 y: this.config.verticalSpeed
             }
+        pInstance.plane = this.config.plane;
         Parallax.add(pInstance, config);
     }
     /**
