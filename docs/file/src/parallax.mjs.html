@@ -70,12 +70,15 @@ class ParallaxSingleton {
     /**
      * The last position of the camera.
      * @private
-     * @type {Object}
+     * @type {x: number | null, y: number | null}
      */
-    lastCamPos = { 
-        x: 0,
-        y: 0
-    }
+    lastCamPos = { x: null, y: null };
+    /**
+     * The virtual position on the map where the layers look natural together.
+     * @private
+     * @type {x: number | null, y: number | null}
+     */
+    anchorPos = { x: null, y: null };
     /**
      * @private
      */
@@ -83,91 +86,62 @@ class ParallaxSingleton {
         this.logger.registerType(&apos;Parallax-Module&apos;, &apos;#ff6600&apos;);
 	}
     /**
-     * Adds an instance to the parallax system.
-     * Call this first and then add your instance to the map.
-     * @param {Object} pInstance - The instance to add to the parallax system.
-     * @param {Object} pConfig - The parallax info that tells this module how to control this instance.
-     * @prop {number} pConfig.x - The x multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 1 to move with camera.
-     * @prop {number} pConfig.y - The y multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 1 to move with camera.
-     * @prop {boolean} pConfig.loop - Whether this instance will loop endlessly.
-     * @param {number} [pX] - The x position this instance will start at.
-     * @param {number} [pY] - The y position this instance will start at.
-     * @param {string} [pMap] - The map this instance will start at.
-     * 
-     * ## The following is how the speed of the parallax multipliers are factored in.  
-     (x | y) &lt; 1 = faster behind the camera eg: (-&gt; Player goes this way = Instance goes this way &lt;-)  
-     (x | y) &gt; 1 faster against the camera eg: (-&gt; Player goes this way = Instance goes this way -&gt;)  
-     (x | y) = 0 = static to the camera eg: (-&gt; Player goes this way = Instance does nothing, and moves with the camera)   
-     (x | y) = 1 = moves with the camera eg: (-&gt; Player goes this way = Instance goes this way -&gt; at position of camera)  
+     * Gets the camera position.
+     * @returns {{x: number, y: number}} - The camera position.
      */
-    add(pInstance, pConfig, pX, pY, pMap) {
-        if (!pInstance) {
-            this.logger.prefix(&apos;Parallax-Module&apos;).error(&apos;No pInstance passed!&apos;);
-            return;
+    getCamPos() {
+        const viewEye = VYLO.Client.getViewEye();
+        if (viewEye) {
+            return { x: viewEye.x, y: viewEye.y };
         }
-
-        if (pConfig instanceof Object) {
-            if (!this.instances.has(pInstance)) {
-                const x = typeof pX === &apos;number&apos; ? pX : pInstance.x;
-                const y = typeof pY === &apos;number&apos; ? pY : pInstance.y;
-                const map = typeof pMap === &apos;string&apos; ? pMap : pInstance.mapName;
-                // Clone the parallax object
-                const parallaxInfo = { ...pConfig };
-                this.init(pInstance, parallaxInfo, x, y, map);
-                // Set the parallax info to the instance
-                this.instanceWeakMap.set(pInstance, parallaxInfo);
-                this.instances.add(pInstance);
-            }
-        } else {
-            this.logger.prefix(&apos;Parallax-Module&apos;).error(&apos;No pConfig passed or invalid type found!&apos;);
-        }
+        return { x: 0, y: 0 };
     }
     /**
-     * Initializes this instance.
-     * @param {Object} pInstance - The instance to initialize.
-     * @param {Object} pConfig - The parallax info that tells this module how to control this instance.
-     * @prop {number} pConfig.x - The x multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 0 to move with camera.
-     * @prop {number} pConfig.y - The y multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 0 to move with camera.
-     * @prop {boolean} pConfig.loop - Whether this instance will loop endlessly.
-     * @param {number} pX - The x position this parallax will start at.
-     * @param {number} pY - The y position this parallax will start at.
-     * @param {string} pMap - The map this instance will start at.
-     * @private
+     * Sets the anchor position for the parallax system.
+     * @param {{ x: number, y: number }} pAnchor - The virtual position on the map where the layers look natural together.
      */
-    init(pInstance, pConfig, pX, pY, pMap) {
-        if (!VYLO) {
-            this.logger.prefix(&apos;Parallax-Module&apos;).error(&apos;VYLO not found! This module depends on the VYLO object being in the global name space.&apos;);
-            return;
-        }
+    setAnchor(pAnchor) {
+        this.setAnchorX(pAnchor.x);
+        this.setAnchorY(pAnchor.y);
+    }
+    /**
+     * Sets the anchor x position for the parallax system.
+     * @param {number} pX - The x position to set the anchor to.
+     */
+    setAnchorX(pX) {
+        this.anchorPos.x = pX;
+        this.anchorXSet = true;
+    }
+    /**
+     * Sets the anchor y position for the parallax system.
+     * @param {number} pY - The y position to set the anchor to.
+     */
+    setAnchorY(pY) {
+        this.anchorPos.y = pY;
+        this.anchorYSet = true;
+    }
+    /**
+     * Creates two clones of the instance to loop infinitely.
+     * @private
+     * @param {Diob} pInstance - The instance to base the clones off of.
+     * @param {boolean} pBypassEvent - Whether to bypass the onRelocated event.
+     * @returns {Diob[]} - An array of the two clones.
+     */
+    createLoopInstances(pInstance, pBypassEvent) {
+        // Create a left and right clone
+        const first = VYLO.newDiob(&apos;MapObject&apos;);
+        const second = VYLO.newDiob(&apos;MapObject&apos;);
 
-        // If this instance is set to loop, then it needs a left and right clone
-        if (pConfig.loop) {
-            // Create a left and right clone
-            const left = VYLO.newDiob(&apos;MapObject&apos;);
-            const right = VYLO.newDiob(&apos;MapObject&apos;);
+        const children = [first, second];
 
-            // Make the left and right clone particle look the same as the initial instance
-            left.setAppearance(pInstance);
-            right.setAppearance(pInstance);
+        first.isCullable = false;
+        second.isCullable = false;
 
-            // Force the renderer to render it, as if its placed offscreen its not rendered.
-            left.setPos(pX, pY, pMap);
-            right.setPos(pX, pY, pMap);
+        // Make the left and right clone particle look the same as the initial instance
+        first.setAppearance(pInstance);
+        second.setAppearance(pInstance);
 
-            // Position the left clone
-            left.x = pX - pInstance.icon.width;
-            left.y = pY;
-            // Position the right clone
-            right.x = pX + pInstance.icon.width;
-            right.y = pY;
-            // Store the clones in a temporary array
-            const children = [left, right];
-            // Loop the clones and store their relative positions to the main instance
-            children.forEach((pChild) =&gt; {
-                pChild.relativeX = pChild.x - pX;
-                pChild.relativeY = pChild.y - pY;
-            });
-
+        if (!pBypassEvent) {
             // Do not mutate event if one is found. Call alongside it.
             const oldRelocatedEvent = pInstance.onRelocated;
             // When the main instance moves, move the clones with their relative position to it.
@@ -182,16 +156,148 @@ class ParallaxSingleton {
                 }
             }
         }
-        const viewEye = VYLO.Client.getViewEye();
-        let lastCamX = 0;
-        let lastCamY = 0;
-        if (viewEye) {
-            lastCamX = viewEye.x;
-            lastCamY = viewEye.y;
+
+        return children;
+    }
+    /**
+     * Enables infinite looping for the horizontal plane.
+     * @private
+     * @param {Diob} pInstance - The instance to loop.
+     * @param {boolean} pBypassEvent - Whether to bypass the onRelocated event.
+     */
+    toggleInfiniteHorizontal(pInstance, pBypassEvent) {
+        const [left, right] = this.createLoopInstances(pInstance, pBypassEvent);
+
+        // Position the left clone
+        left.x = pInstance.x - pInstance.icon.width;
+        left.y = pInstance.y;
+
+        // Position the right clone
+        right.x = pInstance.x + pInstance.icon.width;
+        right.y = pInstance.y;
+
+        // Store the clones in a temporary array
+        const children = [left, right];
+        // Loop the clones and store their relative positions to the main instance
+        children.forEach((pChild) =&gt; {
+            pChild.relativeX = pChild.x - pInstance.x;
+            pChild.relativeY = pChild.y - pInstance.y;
+        });
+    }
+
+    /**
+     * Enables infinite looping for the vertical plane.
+     * @private
+     * @param {Diob} pInstance - The instance to loop.
+     * @param {boolean} pBypassEvent - Whether to bypass the onRelocated event.
+     */
+    toggleInfiniteVertical(pInstance, pBypassEvent) {
+        const [top, bottom] = this.createLoopInstances(pInstance, pBypassEvent);
+
+        // Position the left clone
+        top.x = pInstance.x;
+        top.y = pInstance.y - pInstance.icon.height;
+
+        // Position the right clone
+        bottom.x = pInstance.x;
+        bottom.y = pInstance.y + pInstance.icon.height;
+
+        // Store the clones in a temporary array
+        const children = [top, bottom];
+        // Loop the clones and store their relative positions to the main instance
+        children.forEach((pChild) =&gt; {
+            pChild.relativeX = pChild.x - pInstance.x;
+            pChild.relativeY = pChild.y - pInstance.y;
+        });
+    }
+    /**
+     * Toggle infinite looping for both the horizontal and vertical planes.
+     * @private
+     * @param {Diob} pInstance - The instance to loop.
+     */
+    toggleInfinitePlanes(pInstance) {
+        this.toggleInfiniteHorizontal(pInstance, true);
+        this.toggleInfiniteVertical(pInstance);
+    }
+    /**
+     * Adds an instance to the parallax system.
+     * Call this first and then add your instance to the map.
+     * @param {Object} pInstance - The instance to add to the parallax system.
+     * @param {Object} pParallaxConfig - The parallax info that tells this module how to control this instance.
+     * @prop {number} pParallaxConfig.x - The x multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 1 to move with camera.
+     * @prop {number} pParallaxConfig.y - The y multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 1 to move with camera.
+     * @prop {boolean} pParallaxConfig.infiniteHorizontal - Whether this instance will infiniteHorizontal endlessly.
+     * @prop {boolean} pParallaxConfig.infiniteVertical - Whether this instance will infiniteVertical endlessly.
+     * @param {number} [pX] - The x position this instance will start at.
+     * @param {number} [pY] - The y position this instance will start at.
+     * @param {string} [pMap] - The map this instance will start at.
+     * 
+     * ## The following is how the speed of the parallax multipliers are factored in.  
+     (x | y) &lt; 1 = faster behind the camera eg: (-&gt; Player goes this way = Instance goes this way &lt;-)  
+     (x | y) &gt; 1 faster against the camera eg: (-&gt; Player goes this way = Instance goes this way -&gt;)  
+     (x | y) = 0 = static to the camera eg: (-&gt; Player goes this way = Instance does nothing, and moves with the camera)   
+     (x | y) = 1 = moves with the camera eg: (-&gt; Player goes this way = Instance goes this way -&gt; at position of camera)  
+     */
+    add(pInstance, pParallaxConfig, pX, pY, pMap) {
+        if (!pInstance) {
+            this.logger.prefix(&apos;Parallax-Module&apos;).error(&apos;No pInstance passed!&apos;);
+            return;
         }
-        this.lastCamPos.x = lastCamX;
-        this.lastCamPos.y = lastCamY;
-        pInstance.setPos(pX, pY, pMap);
+
+        if (pParallaxConfig instanceof Object) {
+            if (!this.instances.has(pInstance)) {
+                const x = typeof pX === &apos;number&apos; ? pX : pInstance.x;
+                const y = typeof pY === &apos;number&apos; ? pY : pInstance.y;
+                const map = typeof pMap === &apos;string&apos; ? pMap : pInstance.mapName;
+                // Clone the parallax object
+                const parallaxConfig = { ...pParallaxConfig };
+                // Set the parallax info to the instance
+                this.instanceWeakMap.set(pInstance, parallaxConfig);
+                this.instances.add(pInstance);
+                if (typeof x === &apos;number&apos; &amp;&amp; typeof y === &apos;number&apos; &amp;&amp; typeof map === &apos;string&apos;) {
+                    pInstance.setPos(x, y, map);
+                }
+                this.init(pInstance, parallaxConfig);
+            }
+        } else {
+            this.logger.prefix(&apos;Parallax-Module&apos;).error(&apos;No pParallaxConfig passed or invalid type found!&apos;);
+        }
+    }
+    /**
+     * Initializes this instance.
+     * @private
+     * @param {Object} pInstance - The instance to initialize.
+     * @param {Object} pParallaxConfig - The parallax info that tells this module how to control this instance.
+     * @prop {number} pParallaxConfig.x - The x multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 0 to move with camera.
+     * @prop {number} pParallaxConfig.y - The y multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 0 to move with camera.
+     * @prop {boolean} pParallaxConfig.infiniteHorizontal - Whether this instance will loop endlessly.
+     * @prop {boolean} pParallaxConfig.infiniteVertical - Whether this instance will loop endlessly.
+     */
+    init(pInstance, pParallaxConfig) {
+        if (!VYLO) {
+            this.logger.prefix(&apos;Parallax-Module&apos;).error(&apos;VYLO not found! This module depends on the VYLO object being in the global name space.&apos;);
+            return;
+        }
+
+        const hasLastCamPos = this.lastCamPos.x !== null &amp;&amp; this.lastCamPos.y !== null;
+        const camPos = this.getCamPos();
+
+        if (!hasLastCamPos) {
+            const lastCamX = camPos.x;
+            const lastCamY = camPos.y;
+            this.lastCamPos = { x: lastCamX, y: lastCamY };
+        }
+
+        // Update the instance&apos;s initial position based on the anchor position
+        this.updateInstance(pInstance, camPos.x, camPos.y, this.anchorPos.x, this.anchorPos.y);
+
+        if (pParallaxConfig.infiniteHorizontal &amp;&amp; pParallaxConfig.infiniteVertical) {
+            this.toggleInfinitePlanes(pInstance);
+        } else if (pParallaxConfig.infiniteHorizontal) {
+            this.toggleInfiniteHorizontal(pInstance);
+        } else if (pParallaxConfig.infiniteVertical) {
+            this.toggleInfiniteVertical(pInstance);
+        }
     }
     /**
      * Removes an instance to the parallax system.
@@ -212,63 +318,96 @@ class ParallaxSingleton {
      * Updates the parallax system.
      * @param {number} pCameraX - The x position of the camera.
      * @param {number} pCameraY - The y position of the camera.
-     */
+    */
     update(pCameraX = 0, pCameraY = 0) {
-        // The camera&apos;s x position.
-        let cameraX = pCameraX;
-        // The camera&apos;s x position.
-        let cameraY = pCameraY;
-        this.instances.forEach((pInstance) =&gt; {
-            const parallaxInfo = this.instanceWeakMap.get(pInstance);
+        for (const instance of this.instances) {
+            this.updateInstance(instance, pCameraX, pCameraY);
+        }
 
-            // Move the instance with the camera if the parallax is set to 0
-            const isBackgroundX = parallaxInfo.x === 0;
-            const isBackgroundY = parallaxInfo.y === 0;
+        this.lastCamPos.x = pCameraX;
+        this.lastCamPos.y = pCameraY;
+    }
+    /**
+     * Updates the instance&apos;s position based on the camera&apos;s position.
+     * @private
+     * @param {Diob} pInstance - The instance to update.
+     * @param {number} pCameraX - The x position of the camera.
+     * @param {number} pCameraY - The y position of the camera.
+     * @param {number} pAnchorX - The x position of the anchor.
+     * @param {number} pAnchorY - The y position of the anchor.
+     */
+    updateInstance(pInstance, pCameraX, pCameraY, pAnchorX, pAnchorY) {
+        let lastCamPosX = this.lastCamPos.x;
+        let lastCamPosY = this.lastCamPos.y;
 
-            // Position to set the instance to.
-            let x;
-            let y;
+        if (pAnchorX || pAnchorX === 0) {
+            lastCamPosX = pAnchorX;
+        }
 
-            if (isBackgroundX) {
-                x = cameraX - pInstance.icon.width / 2;
-            } else {
-                let deltaX = cameraX - this.lastCamPos.x;
-                let distX = deltaX * parallaxInfo.x;
-                x = pInstance.x + distX;
-            }
+        if (pAnchorY || pAnchorY === 0) {
+            lastCamPosY = pAnchorY;
+        }
 
-            if (isBackgroundY) {
-                y = cameraY - pInstance.icon.height / 2;
-            } else {
-                let deltaY = cameraY - this.lastCamPos.y;
-                let distY = deltaY * parallaxInfo.y;
-                y = pInstance.y + distY;
-            }
+        const parallaxConfig = this.instanceWeakMap.get(pInstance);
 
-            // Set the position
-            pInstance.x = x;
-            pInstance.y = y;
-            
-            // Logic cannot be ran on background instances as they should not loop
-            if (!isBackgroundX &amp;&amp; !isBackgroundY) {
-                if (parallaxInfo.loop) {
-                    // The start pos + total width
-                    const rightEnd = pInstance.x + pInstance.icon.width;
-                    // The start pos - total width / 2
-                    const leftEnd = pInstance.x - pInstance.icon.width / 6;
-                    if (cameraX &gt; rightEnd) {
-                        pInstance.x += pInstance.icon.width;
-                    } else if (cameraX &lt; leftEnd) {
-                        pInstance.x -= pInstance.icon.width;
-                    }
+        // Move the instance with the camera if the parallax is set to 0
+        const isBackgroundX = parallaxConfig.x === 0;
+        const isBackgroundY = parallaxConfig.y === 0;
+
+        // Position to set the instance to.
+        let x;
+        let y;
+
+        if (isBackgroundX) {
+            x = pCameraX - pInstance.icon.width / 2;
+        } else {
+            let deltaX = pCameraX - lastCamPosX;
+            let distX = deltaX * parallaxConfig.x;
+            x = pInstance.x + distX;
+        }
+
+        if (isBackgroundY) {
+            y = pCameraY - pInstance.icon.height / 2;
+        } else {
+            let deltaY = pCameraY - lastCamPosY;
+            let distY = deltaY * parallaxConfig.y;
+            y = pInstance.y + distY;
+        }
+
+        // Set the position
+        pInstance.x = x;
+        pInstance.y = y;
+
+        // Logic cannot be ran on static background instances as they should not loop
+        if (!isBackgroundX &amp;&amp; !isBackgroundY) {
+            if (parallaxConfig.infiniteHorizontal) {
+                // The start pos + total width
+                const rightEnd = pInstance.x + pInstance.icon.width;
+                // The start pos - total width / 6
+                const leftEnd = pInstance.x - pInstance.icon.width / 6;
+                if (pCameraX &gt; rightEnd) {
+                    pInstance.x += pInstance.icon.width;
+                } else if (pCameraX &lt; leftEnd) {
+                    pInstance.x -= pInstance.icon.width;
                 }
             }
-        });
-        this.lastCamPos.x = cameraX;
-        this.lastCamPos.y = cameraY;
+
+            if (parallaxConfig.infiniteVertical) {
+                // The start pos + total height
+                const bottomEnd = pInstance.x + pInstance.icon.height;
+                // The start pos - total height / 6
+                const topEnd = pInstance.x - pInstance.icon.height / 6;
+                if (pCameraY &gt; bottomEnd) {
+                    pInstance.y += pInstance.icon.height;
+                } else if (pCameraY &lt; topEnd) {
+                    pInstance.y -= pInstance.icon.height;
+                }
+            }
+        }
     }
     /**
      * Handles the onRelocated event for instances. Moves their children in relativity to their position.
+     * @private
      * @param {Diob | MapObject} pInstance - The instance to handle the event for.
      * @param {MapObject[]} pChildren - An array of children belonging to the instance.
      */

@@ -366,9 +366,39 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/parallax.mjs~parallaxsingleton#anchorpos",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-member-anchorPos",
+    "src/parallax.mjs~ParallaxSingleton#anchorPos",
+    "member"
+  ],
+  [
+    "src/parallax.mjs~parallaxsingleton#anchorxset",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-member-anchorXSet",
+    "src/parallax.mjs~ParallaxSingleton#anchorXSet",
+    "member"
+  ],
+  [
+    "src/parallax.mjs~parallaxsingleton#anchoryset",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-member-anchorYSet",
+    "src/parallax.mjs~ParallaxSingleton#anchorYSet",
+    "member"
+  ],
+  [
     "src/parallax.mjs~parallaxsingleton#constructor",
     "class/src/parallax.mjs~ParallaxSingleton.html#instance-constructor-constructor",
     "src/parallax.mjs~ParallaxSingleton#constructor",
+    "method"
+  ],
+  [
+    "src/parallax.mjs~parallaxsingleton#createloopinstances",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-createLoopInstances",
+    "src/parallax.mjs~ParallaxSingleton#createLoopInstances",
+    "method"
+  ],
+  [
+    "src/parallax.mjs~parallaxsingleton#getcampos",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-getCamPos",
+    "src/parallax.mjs~ParallaxSingleton#getCamPos",
     "method"
   ],
   [
@@ -414,9 +444,51 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/parallax.mjs~parallaxsingleton#setanchor",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-setAnchor",
+    "src/parallax.mjs~ParallaxSingleton#setAnchor",
+    "method"
+  ],
+  [
+    "src/parallax.mjs~parallaxsingleton#setanchorx",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-setAnchorX",
+    "src/parallax.mjs~ParallaxSingleton#setAnchorX",
+    "method"
+  ],
+  [
+    "src/parallax.mjs~parallaxsingleton#setanchory",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-setAnchorY",
+    "src/parallax.mjs~ParallaxSingleton#setAnchorY",
+    "method"
+  ],
+  [
+    "src/parallax.mjs~parallaxsingleton#toggleinfinitehorizontal",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-toggleInfiniteHorizontal",
+    "src/parallax.mjs~ParallaxSingleton#toggleInfiniteHorizontal",
+    "method"
+  ],
+  [
+    "src/parallax.mjs~parallaxsingleton#toggleinfiniteplanes",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-toggleInfinitePlanes",
+    "src/parallax.mjs~ParallaxSingleton#toggleInfinitePlanes",
+    "method"
+  ],
+  [
+    "src/parallax.mjs~parallaxsingleton#toggleinfinitevertical",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-toggleInfiniteVertical",
+    "src/parallax.mjs~ParallaxSingleton#toggleInfiniteVertical",
+    "method"
+  ],
+  [
     "src/parallax.mjs~parallaxsingleton#update",
     "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-update",
     "src/parallax.mjs~ParallaxSingleton#update",
+    "method"
+  ],
+  [
+    "src/parallax.mjs~parallaxsingleton#updateinstance",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-updateInstance",
+    "src/parallax.mjs~ParallaxSingleton#updateInstance",
     "method"
   ],
   [
