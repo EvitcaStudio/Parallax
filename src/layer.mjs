@@ -152,10 +152,10 @@ export class Layer {
             x: this.config.horizontalSpeed,
             y: this.config.verticalSpeed,
             // Not using chaining operator due to the docs parser not supporting it.
-            infiniteHorizontal: pConfig.infiniteHorizontal ? pConfig.infiniteHorizontal : false,
-            infiniteVertical: pConfig.infiniteVertical ? pConfig.infiniteVertical : false,
-            cameraAnchorX: pConfig.cameraAnchorX ? pConfig.cameraAnchorX : undefined,
-            cameraAnchorY: pConfig.cameraAnchorY ? pConfig.cameraAnchorY : undefined
+            infiniteHorizontal: pConfig ? (pConfig.infiniteHorizontal ? pConfig.infiniteHorizontal : false) : false,
+            infiniteVertical: pConfig ? (pConfig.infiniteVertical ? pConfig.infiniteVertical : false) : false,
+            cameraAnchorX: pConfig ? (pConfig.cameraAnchorX ? pConfig.cameraAnchorX : undefined) : undefined,
+            cameraAnchorY: pConfig ? (pConfig.cameraAnchorY ? pConfig.cameraAnchorY : undefined) : undefined
         }
         pInstance.plane = this.config.plane;
         Parallax.add(pInstance, config);
