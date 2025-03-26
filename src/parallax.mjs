@@ -55,7 +55,25 @@ class ParallaxSingleton {
         if (viewEye) {
             return { x: viewEye.x, y: viewEye.y };
         }
-        return { x: 0, y: 0 };
+        return { x: null, y: null };
+    }
+    /**
+     * Whether the last camera position is set.
+     * @returns {boolean} - Whether the last camera position is set.
+     */
+    hasLastCamPos() {
+        return this.lastCamPos.x !== null && this.lastCamPos.y !== null;
+    }
+    /**
+     * Sets the last camera position.
+     * @param {number} pX - The last x position of the camera.
+     * @param {number} pY - The last y position of the camera.
+     */
+    setLastCamPos(pX, pY) {
+        if (pX !== null && pY !== null) {
+            this.lastCamPos.x = pX;
+            this.lastCamPos.y = pY;
+        }
     }
     /**
      * Sets the anchor position for the parallax system.
@@ -240,17 +258,14 @@ class ParallaxSingleton {
             return;
         }
 
-        const hasLastCamPos = this.lastCamPos.x !== null && this.lastCamPos.y !== null;
-        const camPos = this.getCamPos();
+        const { x, y } = this.getCamPos();
 
-        if (!hasLastCamPos) {
-            const lastCamX = camPos.x;
-            const lastCamY = camPos.y;
-            this.lastCamPos = { x: lastCamX, y: lastCamY };
+        if (!this.hasLastCamPos()) {
+            this.setLastCamPos(x, y);
         }
 
         // Update the instance's initial position based on the anchor position
-        this.updateInstance(pInstance, camPos.x, camPos.y, this.anchorPos.x, this.anchorPos.y);
+        this.updateInstance(pInstance, x, y, this.anchorPos.x, this.anchorPos.y);
 
         if (pParallaxConfig.infiniteHorizontal && pParallaxConfig.infiniteVertical) {
             this.toggleInfinitePlanes(pInstance);

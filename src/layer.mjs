@@ -50,14 +50,14 @@ export class Layer {
         if (Array.isArray(pConfig.instances)) {
             pConfig.instances.forEach(pInstance => {
                 pInstance.plane = this.config.plane;
-                this.add(pInstance, instanceConfig)
+                this.add(pInstance, { x: instanceConfig.x, y: instanceConfig.y } )
             });
         }
 
         if (Array.isArray(pConfig.backgrounds)) {
             pConfig.backgrounds.forEach(pInstance => {
                 pInstance.plane = this.config.plane;
-                this.add(pInstance, instanceConfig)
+                this.add(pInstance, instanceConfig, true)
             });
         }
     }
@@ -135,21 +135,22 @@ export class Layer {
      * When using this API the instance should already be on the map.
      * The instance's 'plane' will be changed to match the plane of the layer.
      * @param {Diob} pInstance - The instance to add to the layer.
-     * @param {Object} pConfig - The personal config of this instance. Akin to the parallax info passed via the `Parallax.add` API.
-     * @prop {number} pConfig.x - The horizontal speed of this instance. (This will be ignored and the layer's speed will be used.)
-     * @prop {number} pConfig.y - The vertical speed of this instance. (This will be ignored and the layer's speed will be used.)
-     * @prop {boolean} pConfig.infiniteHorizontal - Whether this instance will be treated as a horizontal background and loop seamlessly.
-     * @prop {boolean} pConfig.infiniteVertical - Whether this instance will be treated as a vertical background and loop seamlessly.
+     * @param {Object} [pConfig] - The personal config of this instance. Akin to the parallax info passed via the `Parallax.add` API.
+     * @prop {number} [pConfig.x] - The horizontal speed of this instance. (This will be ignored and the layer's speed will be used.)
+     * @prop {number} [pConfig.y] - The vertical speed of this instance. (This will be ignored and the layer's speed will be used.)
+     * @prop {boolean} [pConfig.infiniteHorizontal] - Whether this instance will be treated as a horizontal background and loop seamlessly.
+     * @prop {boolean} [pConfig.infiniteVertical] - Whether this instance will be treated as a vertical background and loop seamlessly.
+     * @prop {boolean} [pBackground=false] - Whether this instance is a background. (This will be ignored and the layer's speed will be used.)
      */
-    add(pInstance, pConfig) {
+    add(pInstance, pConfig, pBackground=false) {
         if (this.config.instances.has(pInstance)) return;
         this.config.instances.add(pInstance);
         const config = pConfig 
             ? {
                 x: this.config.horizontalSpeed,
                 y: this.config.verticalSpeed,
-                infiniteHorizontal: pConfig.infiniteHorizontal,
-                infiniteVertical: pConfig.infiniteVertical
+                infiniteHorizontal: pBackground ? pConfig.infiniteHorizontal : false,
+                infiniteVertical: pBackground ? pConfig.infiniteVertical : false
             }
             : {
                 x: this.config.horizontalSpeed,
