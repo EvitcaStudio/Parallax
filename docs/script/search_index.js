@@ -366,12 +366,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/parallax.mjs~parallaxsingleton#anchorpos",
-    "class/src/parallax.mjs~ParallaxSingleton.html#instance-member-anchorPos",
-    "src/parallax.mjs~ParallaxSingleton#anchorPos",
-    "member"
-  ],
-  [
     "src/parallax.mjs~parallaxsingleton#anchorxset",
     "class/src/parallax.mjs~ParallaxSingleton.html#instance-member-anchorXSet",
     "src/parallax.mjs~ParallaxSingleton#anchorXSet",
@@ -381,6 +375,12 @@ window.esdocSearchIndex = [
     "src/parallax.mjs~parallaxsingleton#anchoryset",
     "class/src/parallax.mjs~ParallaxSingleton.html#instance-member-anchorYSet",
     "src/parallax.mjs~ParallaxSingleton#anchorYSet",
+    "member"
+  ],
+  [
+    "src/parallax.mjs~parallaxsingleton#cameraanchor",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-member-cameraAnchor",
+    "src/parallax.mjs~ParallaxSingleton#cameraAnchor",
     "member"
   ],
   [
@@ -396,15 +396,39 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/parallax.mjs~parallaxsingleton#getanchorx",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-getAnchorX",
+    "src/parallax.mjs~ParallaxSingleton#getAnchorX",
+    "method"
+  ],
+  [
+    "src/parallax.mjs~parallaxsingleton#getanchory",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-getAnchorY",
+    "src/parallax.mjs~ParallaxSingleton#getAnchorY",
+    "method"
+  ],
+  [
     "src/parallax.mjs~parallaxsingleton#getcampos",
     "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-getCamPos",
     "src/parallax.mjs~ParallaxSingleton#getCamPos",
     "method"
   ],
   [
+    "src/parallax.mjs~parallaxsingleton#getcameraanchor",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-getCameraAnchor",
+    "src/parallax.mjs~ParallaxSingleton#getCameraAnchor",
+    "method"
+  ],
+  [
     "src/parallax.mjs~parallaxsingleton#handleonrelocated",
     "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-handleOnRelocated",
     "src/parallax.mjs~ParallaxSingleton#handleOnRelocated",
+    "method"
+  ],
+  [
+    "src/parallax.mjs~parallaxsingleton#haslastcampos",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-hasLastCamPos",
+    "src/parallax.mjs~ParallaxSingleton#hasLastCamPos",
     "method"
   ],
   [
@@ -426,6 +450,18 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/parallax.mjs~parallaxsingleton#isanchorxset",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-isAnchorXSet",
+    "src/parallax.mjs~ParallaxSingleton#isAnchorXSet",
+    "method"
+  ],
+  [
+    "src/parallax.mjs~parallaxsingleton#isanchoryset",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-isAnchorYSet",
+    "src/parallax.mjs~ParallaxSingleton#isAnchorYSet",
+    "method"
+  ],
+  [
     "src/parallax.mjs~parallaxsingleton#lastcampos",
     "class/src/parallax.mjs~ParallaxSingleton.html#instance-member-lastCamPos",
     "src/parallax.mjs~ParallaxSingleton#lastCamPos",
@@ -444,21 +480,45 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/parallax.mjs~parallaxsingleton#setanchor",
-    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-setAnchor",
-    "src/parallax.mjs~ParallaxSingleton#setAnchor",
+    "src/parallax.mjs~parallaxsingleton#resetanchor",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-resetAnchor",
+    "src/parallax.mjs~ParallaxSingleton#resetAnchor",
     "method"
   ],
   [
-    "src/parallax.mjs~parallaxsingleton#setanchorx",
-    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-setAnchorX",
-    "src/parallax.mjs~ParallaxSingleton#setAnchorX",
+    "src/parallax.mjs~parallaxsingleton#resetanchorx",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-resetAnchorX",
+    "src/parallax.mjs~ParallaxSingleton#resetAnchorX",
     "method"
   ],
   [
-    "src/parallax.mjs~parallaxsingleton#setanchory",
-    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-setAnchorY",
-    "src/parallax.mjs~ParallaxSingleton#setAnchorY",
+    "src/parallax.mjs~parallaxsingleton#resetanchory",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-resetAnchorY",
+    "src/parallax.mjs~ParallaxSingleton#resetAnchorY",
+    "method"
+  ],
+  [
+    "src/parallax.mjs~parallaxsingleton#setcameraanchor",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-setCameraAnchor",
+    "src/parallax.mjs~ParallaxSingleton#setCameraAnchor",
+    "method"
+  ],
+  [
+    "src/parallax.mjs~parallaxsingleton#setcameraanchorx",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-setCameraAnchorX",
+    "src/parallax.mjs~ParallaxSingleton#setCameraAnchorX",
+    "method"
+  ],
+  [
+    "src/parallax.mjs~parallaxsingleton#setcameraanchory",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-setCameraAnchorY",
+    "src/parallax.mjs~ParallaxSingleton#setCameraAnchorY",
+    "method"
+  ],
+  [
+    "src/parallax.mjs~parallaxsingleton#setlastcampos",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-setLastCamPos",
+    "src/parallax.mjs~ParallaxSingleton#setLastCamPos",
     "method"
   ],
   [
