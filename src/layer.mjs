@@ -26,8 +26,10 @@ export class Layer {
      * @prop {number} pConfig.horizontalSpeed - The horizontal speed of the layer.
      * @prop {number} pConfig.verticalSpeed - The vertical speed of the layer. 
      * @prop {number} pConfig.plane - The plane this layer will occupy.
-     * @prop {boolean} pConfig.infiniteHorizontal - Whether the layer will loop infinitely horizontally.
-     * @prop {boolean} pConfig.infiniteVertical - Whether the layer will loop infinitely vertically.
+     * @prop {boolean} [pConfig.infiniteHorizontal] - Whether the layer will loop infinitely horizontally.
+     * @prop {boolean} [pConfig.infiniteVertical] - Whether the layer will loop infinitely vertically.
+     * @prop {number} [pConfig.cameraAnchorX] - The x position of the camera to anchor this instance to.
+     * @prop {number} [pConfig.cameraAnchorY] - The y position of the camera to anchor this instance to.
      * @param {Diob[] | MapObject[]} pConfig.backgrounds - An array of instances that will serve as the background. These are automatically toggled to repeat.
      * @prop {Diob[] | MapObject[]} pConfig.instances - The instances that will be added to the layer. 
      */
@@ -43,21 +45,21 @@ export class Layer {
         const instanceConfig = {
             x: this.config.horizontalSpeed,
             y: this.config.verticalSpeed,
-            infiniteHorizontal: pConfig.infiniteHorizontal,
-            infiniteVertical: pConfig.infiniteVertical
+            cameraAnchorX: pConfig.cameraAnchorX,
+            cameraAnchorY: pConfig.cameraAnchorY
         }
 
         if (Array.isArray(pConfig.instances)) {
             pConfig.instances.forEach(pInstance => {
                 pInstance.plane = this.config.plane;
-                this.add(pInstance, { x: instanceConfig.x, y: instanceConfig.y } )
+                this.add(pInstance, instanceConfig);
             });
         }
 
         if (Array.isArray(pConfig.backgrounds)) {
             pConfig.backgrounds.forEach(pInstance => {
                 pInstance.plane = this.config.plane;
-                this.add(pInstance, instanceConfig, true)
+                this.add(pInstance, { ...instanceConfig, infiniteHorizontal: pConfig.infiniteHorizontal, infiniteVertical: pConfig.infiniteVertical });
             });
         }
     }
@@ -140,22 +142,20 @@ export class Layer {
      * @prop {number} [pConfig.y] - The vertical speed of this instance. (This will be ignored and the layer's speed will be used.)
      * @prop {boolean} [pConfig.infiniteHorizontal] - Whether this instance will be treated as a horizontal background and loop seamlessly.
      * @prop {boolean} [pConfig.infiniteVertical] - Whether this instance will be treated as a vertical background and loop seamlessly.
-     * @prop {boolean} [pBackground=false] - Whether this instance is a background. (This will be ignored and the layer's speed will be used.)
+     * @prop {number} [pConfig.cameraAnchorX] - The x position of the camera to anchor this instance to.
+     * @prop {number} [pConfig.cameraAnchorY] - The y position of the camera to anchor this instance to.
      */
-    add(pInstance, pConfig, pBackground=false) {
+    add(pInstance, pConfig) {
         if (this.config.instances.has(pInstance)) return;
         this.config.instances.add(pInstance);
-        const config = pConfig 
-            ? {
-                x: this.config.horizontalSpeed,
-                y: this.config.verticalSpeed,
-                infiniteHorizontal: pBackground ? pConfig.infiniteHorizontal : false,
-                infiniteVertical: pBackground ? pConfig.infiniteVertical : false
-            }
-            : {
-                x: this.config.horizontalSpeed,
-                y: this.config.verticalSpeed
-            }
+        const config = {
+            x: this.config.horizontalSpeed,
+            y: this.config.verticalSpeed,
+            infiniteHorizontal: pConfig?.infiniteHorizontal,
+            infiniteVertical: pConfig?.infiniteVertical,
+            cameraAnchorX: pConfig?.cameraAnchorX,
+            cameraAnchorY: pConfig?.cameraAnchorY
+        }
         pInstance.plane = this.config.plane;
         Parallax.add(pInstance, config);
     }

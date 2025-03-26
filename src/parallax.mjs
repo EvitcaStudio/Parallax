@@ -39,7 +39,19 @@ class ParallaxSingleton {
      * @private
      * @type {x: number | null, y: number | null}
      */
-    anchorPos = { x: null, y: null };
+    cameraAnchor = { x: null, y: null };
+    /**
+     * Whether the anchor y position is set.
+     * @private
+     * @type {boolean}
+     */
+    anchorYSet = false;
+    /**
+     * Whether the anchor x position is set.
+     * @private
+     * @type {boolean}
+     */
+    anchorXSet = false;
     /**
      * @private
      */
@@ -70,34 +82,88 @@ class ParallaxSingleton {
      * @param {number} pY - The last y position of the camera.
      */
     setLastCamPos(pX, pY) {
-        if (pX !== null && pY !== null) {
-            this.lastCamPos.x = pX;
-            this.lastCamPos.y = pY;
-        }
+        this.lastCamPos.x = pX;
+        this.lastCamPos.y = pY;
     }
     /**
      * Sets the anchor position for the parallax system.
-     * @param {{ x: number, y: number }} pAnchor - The virtual position on the map where the layers look natural together.
+     * @param {{ x: number, y: number }} pCameraAnchor - The virtual position on the map where the layers look natural together.
      */
-    setAnchor(pAnchor) {
-        this.setAnchorX(pAnchor.x);
-        this.setAnchorY(pAnchor.y);
+    setCameraAnchor(pCameraAnchor) {
+        this.setCameraAnchorX(pCameraAnchor.x);
+        this.setCameraAnchorY(pCameraAnchor.y);
     }
     /**
      * Sets the anchor x position for the parallax system.
-     * @param {number} pX - The x position to set the anchor to.
+     * @param {number} pXAnchor - The x position to set the anchor to.
      */
-    setAnchorX(pX) {
-        this.anchorPos.x = pX;
+    setCameraAnchorX(pXAnchor) {
+        this.cameraAnchor.x = pXAnchor;
         this.anchorXSet = true;
     }
     /**
      * Sets the anchor y position for the parallax system.
-     * @param {number} pY - The y position to set the anchor to.
+     * @param {number} pYAnchor - The y position to set the anchor to.
      */
-    setAnchorY(pY) {
-        this.anchorPos.y = pY;
+    setCameraAnchorY(pYAnchor) {
+        this.cameraAnchor.y = pYAnchor;
         this.anchorYSet = true;
+    }
+    /**
+     * Gets the anchor position.
+     * @returns {{x: number | null, y: number | null}} - The anchor position.
+     */
+    getCameraAnchor() {
+        return { ...this.cameraAnchor };
+    }
+    /**
+     * Gets the anchor x position.
+     * @returns {number | null} - The anchor x position.
+     */
+    getAnchorX() {
+        return this.cameraAnchor.x;
+    }
+    /**
+     * Gets the anchor y position.
+     * @returns {number | null} - The anchor x position.
+     */
+    getAnchorY() {
+        return this.cameraAnchor.y;
+    }
+    /**
+     * Resets the anchor position.
+     */
+    resetAnchor() {
+        this.resetAnchorX();
+        this.resetAnchorY();
+    }
+    /**
+     * Resets the anchor x position.
+     */
+    resetAnchorX() {
+        this.cameraAnchor.x = null;
+        this.anchorXSet = false;
+    }
+    /**
+     * Resets the anchor y position.
+     */
+    resetAnchorY() {
+        this.cameraAnchor.y = null;
+        this.anchorYSet = false;
+    }
+    /**
+     * Whether the anchor x position is set.
+     * @returns {boolean} - Whether the anchor x position is set.
+     */
+    isAnchorXSet() {
+        return this.anchorXSet;
+    }
+    /**
+     * Whether the anchor y position is set.
+     * @returns {boolean} - Whether the anchor y position is set.
+     */
+    isAnchorYSet() {
+        return this.anchorYSet;
     }
     /**
      * Creates two clones of the instance to loop infinitely.
@@ -201,15 +267,15 @@ class ParallaxSingleton {
     /**
      * Adds an instance to the parallax system.
      * Call this first and then add your instance to the map.
+     * @private
      * @param {Object} pInstance - The instance to add to the parallax system.
      * @param {Object} pParallaxConfig - The parallax info that tells this module how to control this instance.
      * @prop {number} pParallaxConfig.x - The x multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 1 to move with camera.
      * @prop {number} pParallaxConfig.y - The y multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 1 to move with camera.
      * @prop {boolean} pParallaxConfig.infiniteHorizontal - Whether this instance will infiniteHorizontal endlessly.
      * @prop {boolean} pParallaxConfig.infiniteVertical - Whether this instance will infiniteVertical endlessly.
-     * @param {number} [pX] - The x position this instance will start at.
-     * @param {number} [pY] - The y position this instance will start at.
-     * @param {string} [pMap] - The map this instance will start at.
+     * @prop {number} pParallaxConfig.cameraAnchorX - The x position of the camera to anchor this instance to.
+     * @prop {number} pParallaxConfig.cameraAnchorY - The y position of the camera to anchor this instance to.
      * 
      * ## The following is how the speed of the parallax multipliers are factored in.  
      (x | y) < 1 = faster behind the camera eg: (-> Player goes this way = Instance goes this way <-)  
@@ -217,7 +283,7 @@ class ParallaxSingleton {
      (x | y) = 0 = static to the camera eg: (-> Player goes this way = Instance does nothing, and moves with the camera)   
      (x | y) = 1 = moves with the camera eg: (-> Player goes this way = Instance goes this way -> at position of camera)  
      */
-    add(pInstance, pParallaxConfig, pX, pY, pMap) {
+    add(pInstance, pParallaxConfig) {
         if (!pInstance) {
             this.logger.prefix('Parallax-Module').error('No pInstance passed!');
             return;
@@ -225,16 +291,14 @@ class ParallaxSingleton {
 
         if (pParallaxConfig instanceof Object) {
             if (!this.instances.has(pInstance)) {
-                const x = typeof pX === 'number' ? pX : pInstance.x;
-                const y = typeof pY === 'number' ? pY : pInstance.y;
-                const map = typeof pMap === 'string' ? pMap : pInstance.mapName;
+                const { x, y, mapName } = pInstance;
                 // Clone the parallax object
                 const parallaxConfig = { ...pParallaxConfig };
                 // Set the parallax info to the instance
                 this.instanceWeakMap.set(pInstance, parallaxConfig);
                 this.instances.add(pInstance);
-                if (typeof x === 'number' && typeof y === 'number' && typeof map === 'string') {
-                    pInstance.setPos(x, y, map);
+                if (typeof x === 'number' && typeof y === 'number' && typeof mapName === 'string') {
+                    pInstance.setPos(x, y, mapName);
                 }
                 this.init(pInstance, parallaxConfig);
             }
@@ -251,6 +315,8 @@ class ParallaxSingleton {
      * @prop {number} pParallaxConfig.y - The y multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 0 to move with camera.
      * @prop {boolean} pParallaxConfig.infiniteHorizontal - Whether this instance will loop endlessly.
      * @prop {boolean} pParallaxConfig.infiniteVertical - Whether this instance will loop endlessly.
+     * @prop {number} pParallaxConfig.cameraAnchorX - The x position of the camera to anchor this instance to.
+     * @prop {number} pParallaxConfig.cameraAnchorY - The y position of the camera to anchor this instance to.
      */
     init(pInstance, pParallaxConfig) {
         if (!VYLO) {
@@ -265,13 +331,15 @@ class ParallaxSingleton {
         }
 
         // Update the instance's initial position based on the anchor position
-        this.updateInstance(pInstance, x, y, this.anchorPos.x, this.anchorPos.y);
+        this.updateInstance(pInstance, x, y, { x: pParallaxConfig.cameraAnchorX, y: pParallaxConfig.cameraAnchorY });
 
-        if (pParallaxConfig.infiniteHorizontal && pParallaxConfig.infiniteVertical) {
+        const { infiniteHorizontal, infiniteVertical } = pParallaxConfig;
+
+        if (infiniteHorizontal && infiniteVertical) {
             this.toggleInfinitePlanes(pInstance);
-        } else if (pParallaxConfig.infiniteHorizontal) {
+        } else if (infiniteHorizontal) {
             this.toggleInfiniteHorizontal(pInstance);
-        } else if (pParallaxConfig.infiniteVertical) {
+        } else if (infiniteVertical) {
             this.toggleInfiniteVertical(pInstance);
         }
     }
@@ -309,19 +377,23 @@ class ParallaxSingleton {
      * @param {Diob} pInstance - The instance to update.
      * @param {number} pCameraX - The x position of the camera.
      * @param {number} pCameraY - The y position of the camera.
-     * @param {number} pAnchorX - The x position of the anchor.
-     * @param {number} pAnchorY - The y position of the anchor.
+     * @param {{x: number | null, y: number | null}} [pAnchor] - The camera anchor position to use.
      */
-    updateInstance(pInstance, pCameraX, pCameraY, pAnchorX, pAnchorY) {
+    updateInstance(pInstance, pCameraX, pCameraY, pAnchor) {
         let lastCamPosX = this.lastCamPos.x;
         let lastCamPosY = this.lastCamPos.y;
 
-        if (pAnchorX || pAnchorX === 0) {
-            lastCamPosX = pAnchorX;
-        }
+        if (pAnchor) {
+            const x = this.getAnchorX() || pAnchor.x;
+            const y = this.getAnchorY() || pAnchor.y;
 
-        if (pAnchorY || pAnchorY === 0) {
-            lastCamPosY = pAnchorY;
+            if (typeof x === 'number') {
+                lastCamPosX = x;
+            }
+
+            if (typeof y === 'number') {
+                lastCamPosY = y;
+            }
         }
 
         const parallaxConfig = this.instanceWeakMap.get(pInstance);
