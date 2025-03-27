@@ -566,8 +566,205 @@
   {
     "__docId__": 48,
     "kind": "file",
+    "name": "src/events.mjs",
+    "content": "/**\n * Class-based EventEmitter for managing custom events with pInstance-specific tracking.\n */\nexport class EventEmitter {\n    /**\n     * Map to store event listeners by pInstance and event type.\n     * @type {WeakMap<object, Map<string, Set<Function>>>}\n     */\n    events;\n\n    constructor() {\n        this.events = new WeakMap();\n    }\n\n    /**\n     * Registers a listener for a specified event on a specific pInstance.\n     *\n     * @param {object} pInstance - The instance to associate the event with.\n     * @param {string} pEventName - The name of the event.\n     * @param {Function} pListener - The function to invoke when the event is triggered.\n     */\n    on(pInstance, pEventName, pListener) {\n        if (!this.events.has(pInstance)) {\n            this.events.set(pInstance, new Map());\n        }\n        const instanceEvents = this.events.get(pInstance);\n        if (!instanceEvents.has(pEventName)) {\n            instanceEvents.set(pEventName, new Set());\n        }\n        instanceEvents.get(pEventName).add(pListener);\n    }\n\n    /**\n     * Unregisters a listener for a specified event on a specific pInstance.\n     *\n     * @param {object} pInstance - The instance to disassociate the event from.\n     * @param {string} pEventName - The name of the event.\n     * @param {Function} pListener - The function to remove from the event.\n     */\n    off(pInstance, pEventName, pListener) {\n        if (this.events.has(pInstance)) {\n            const instanceEvents = this.events.get(pInstance);\n            if (instanceEvents.has(pEventName)) {\n                instanceEvents.get(pEventName).delete(pListener);\n                // Clean up the event if no listeners remain\n                if (instanceEvents.get(pEventName).size === 0) {\n                    instanceEvents.delete(pEventName);\n                }\n            }\n            // Clean up the pInstance if no events remain\n            if (instanceEvents.size === 0) {\n                this.events.delete(pInstance);\n            }\n        }\n    }\n\n    /**\n     * Triggers a specified event on a specific pInstance, invoking all registered listeners.\n     *\n     * @param {object} pInstance - The instance to trigger the event on.\n     * @param {string} pEventName - The name of the event.\n     * @param {object} [pData] - The data to pass to the event listeners.\n     */\n    emit(pInstance, pEventName, pData) {\n        if (this.events.has(pInstance)) {\n            const instanceEvents = this.events.get(pInstance);\n            if (instanceEvents.has(pEventName)) {\n                instanceEvents.get(pEventName).forEach((pListener) => {\n                    try {\n                        pListener({\n                            pInstance,\n                            event: pEventName,\n                            pData\n                        });\n                    } catch (error) {\n                        console.error(`Error in ${pEventName} pListener:`, error);\n                    }\n                });\n            }\n        }\n    }\n}\n",
+    "static": true,
+    "longname": "/Users/doubleactii/Documents/Github/Parallax/src/events.mjs",
+    "access": "public",
+    "description": null,
+    "lineNumber": 1
+  },
+  {
+    "__docId__": 49,
+    "kind": "class",
+    "name": "EventEmitter",
+    "memberof": "src/events.mjs",
+    "static": true,
+    "longname": "src/events.mjs~EventEmitter",
+    "access": "public",
+    "export": true,
+    "importPath": "parallax/src/events.mjs",
+    "importStyle": "{EventEmitter}",
+    "description": "Class-based EventEmitter for managing custom events with pInstance-specific tracking.",
+    "lineNumber": 4,
+    "interface": false
+  },
+  {
+    "__docId__": 50,
+    "kind": "member",
+    "name": "events",
+    "memberof": "src/events.mjs~EventEmitter",
+    "static": false,
+    "longname": "src/events.mjs~EventEmitter#events",
+    "access": "public",
+    "description": "Map to store event listeners by pInstance and event type.",
+    "lineNumber": 9,
+    "type": {
+      "nullable": null,
+      "types": [
+        "WeakMap<object, Map<string, Set<Function>>>"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 51,
+    "kind": "constructor",
+    "name": "constructor",
+    "memberof": "src/events.mjs~EventEmitter",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/events.mjs~EventEmitter#constructor",
+    "access": "public",
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true
+  },
+  {
+    "__docId__": 53,
+    "kind": "method",
+    "name": "on",
+    "memberof": "src/events.mjs~EventEmitter",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/events.mjs~EventEmitter#on",
+    "access": "public",
+    "description": "Registers a listener for a specified event on a specific pInstance.",
+    "lineNumber": 22,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "pInstance",
+        "description": "The instance to associate the event with."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "pEventName",
+        "description": "The name of the event."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "pListener",
+        "description": "The function to invoke when the event is triggered."
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 54,
+    "kind": "method",
+    "name": "off",
+    "memberof": "src/events.mjs~EventEmitter",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/events.mjs~EventEmitter#off",
+    "access": "public",
+    "description": "Unregisters a listener for a specified event on a specific pInstance.",
+    "lineNumber": 40,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "pInstance",
+        "description": "The instance to disassociate the event from."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "pEventName",
+        "description": "The name of the event."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "pListener",
+        "description": "The function to remove from the event."
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 55,
+    "kind": "method",
+    "name": "emit",
+    "memberof": "src/events.mjs~EventEmitter",
+    "generator": false,
+    "async": false,
+    "static": false,
+    "longname": "src/events.mjs~EventEmitter#emit",
+    "access": "public",
+    "description": "Triggers a specified event on a specific pInstance, invoking all registered listeners.",
+    "lineNumber": 64,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "pInstance",
+        "description": "The instance to trigger the event on."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "pEventName",
+        "description": "The name of the event."
+      },
+      {
+        "nullable": null,
+        "types": [
+          "object"
+        ],
+        "spread": false,
+        "optional": true,
+        "name": "pData",
+        "description": "The data to pass to the event listeners."
+      }
+    ],
+    "return": null
+  },
+  {
+    "__docId__": 56,
+    "kind": "file",
     "name": "src/layer.mjs",
-    "content": "import { Parallax } from './parallax.mjs';\n\nexport class Layer {\n    /**\n     * The configuration object of this layer.\n     * @private\n     * @type {Object}\n     * @param {number} horizontalSpeed - The horizontal speed of the layer.\n     * @param {number} verticalSpeed - The vertical speed of the layer.\n     * @param {number} plane - The plane this parallax layer will occupy.\n     * @param {Diob[] | MapObject[]} backgrounds - An array of instances that will serve as the background. These are automatically toggled to repeat.\n     * @param {Set} instances - A set of instances currently on the layer.\n     */\n    config = {\n        // Move the instance with the camera if the parallax is set to 0\n        horizontalSpeed: 0,\n        verticalSpeed: 0,\n        plane: 1,\n        backgrounds: new Set(),\n        instances: new Set()\n    }\n    /**\n     * Creates a new Parallax layer with the supplied configuration.\n     * When creating a layer, all instances and backgrounds should already be on the map.\n     * @param {Object} pConfig - The configuration of the parallax layer.\n     * @prop {number} pConfig.horizontalSpeed - The horizontal speed of the layer.\n     * @prop {number} pConfig.verticalSpeed - The vertical speed of the layer. \n     * @prop {number} pConfig.plane - The plane this layer will occupy.\n     * @prop {boolean} [pConfig.infiniteHorizontal] - Whether the layer will loop infinitely horizontally.\n     * @prop {boolean} [pConfig.infiniteVertical] - Whether the layer will loop infinitely vertically.\n     * @prop {number} [pConfig.cameraAnchorX] - The x position of the camera to anchor this instance to.\n     * @prop {number} [pConfig.cameraAnchorY] - The y position of the camera to anchor this instance to.\n     * @param {Diob[] | MapObject[]} pConfig.backgrounds - An array of instances that will serve as the background. These are automatically toggled to repeat.\n     * @prop {Diob[] | MapObject[]} pConfig.instances - The instances that will be added to the layer. \n     */\n    constructor(pConfig) {\n        this.updateConfigSpeed(pConfig, true);\n\n        if (!typeof pConfig.plane === 'number') {\n            Parallax.logger.prefix('Parallax-Module').warn('Expected a number for \"pConfig.plane\", but received:', typeof pConfig.plane, '\\n Default plane of \"1\" used.');\n        } else {\n            this.config.plane = pConfig.plane;\n        }\n\n        const instanceConfig = {\n            x: this.config.horizontalSpeed,\n            y: this.config.verticalSpeed,\n            cameraAnchorX: pConfig.cameraAnchorX,\n            cameraAnchorY: pConfig.cameraAnchorY\n        }\n\n        if (Array.isArray(pConfig.instances)) {\n            pConfig.instances.forEach(pInstance => {\n                pInstance.plane = this.config.plane;\n                this.add(pInstance, instanceConfig);\n            });\n        }\n\n        if (Array.isArray(pConfig.backgrounds)) {\n            pConfig.backgrounds.forEach(pInstance => {\n                pInstance.plane = this.config.plane;\n                this.add(pInstance, { ...instanceConfig, infiniteHorizontal: pConfig.infiniteHorizontal, infiniteVertical: pConfig.infiniteVertical });\n            });\n        }\n    }\n    /**\n     * Updates the configuration speed of the layer.\n     * @param {Object} pConfig - The speed configuration of the parallax layer.\n     * @prop {number} pConfig.horizontalSpeed - The horizontal speed of the layer.\n     * @prop {number} pConfig.verticalSpeed - The vertical speed of the layer. \n     * @param {boolean} pUpdateLayerConfigOnly - If only to update the layer config and not the instance config.\n     */\n    updateConfigSpeed(pConfig, pUpdateLayerConfigOnly) {\n        this.updateHorizontalSpeed(pConfig.horizontalSpeed, pUpdateLayerConfigOnly);\n        this.updateVerticalSpeed(pConfig.verticalSpeed, pUpdateLayerConfigOnly);\n    }\n    /**\n     * Updates the horizontal speed of this layer.\n     * @param {number} pHorizontalSpeed - The new horizontal speed.\n     * @param {boolean} pUpdateLayerConfigOnly - If only to update the layer config and not the instance config.\n     */\n    updateHorizontalSpeed(pHorizontalSpeed, pUpdateLayerConfigOnly) {\n        const inValidHorizontal = pHorizontalSpeed && typeof pHorizontalSpeed !== 'number';\n\n        if (inValidHorizontal) {\n            Parallax.logger.prefix('Parallax-Module').warn('Expected a number for \"pHorizontalSpeed\", but received:', typeof pHorizontalSpeed);\n            return\n        }\n\n        this.config.horizontalSpeed = pHorizontalSpeed;\n\n        if (!pUpdateLayerConfigOnly) {\n            const update = (pInstance) => {\n                const parallaxInfo = Parallax.instanceWeakMap.get(pInstance);\n                parallaxInfo.x = pVerticalSpeed;\n            }\n\n            this.instances.forEach(pInstance => {\n                update(pInstance);\n            });\n            this.backgrounds.forEach(pInstance => {\n                update(pInstance);\n            });\n        }\n    }\n    /**\n     * Updates the vertical speed of the layer.\n     * @param {number} pVerticalSpeed - The new vertical speed. \n     * @param {boolean} pUpdateLayerConfigOnly - If only to update the layer config and not the instance config.\n     */\n    updateVerticalSpeed(pVerticalSpeed, pUpdateLayerConfigOnly) {\n        const inValidVertical = pVerticalSpeed && typeof pVerticalSpeed !== 'number';\n\n        if (inValidVertical) {\n            Parallax.logger.prefix('Parallax-Module').warn('Expected a number for \"pVerticalSpeed\", but received:', typeof pVerticalSpeed);\n            return\n        }\n\n        this.config.verticalSpeed = pVerticalSpeed;\n\n        if (!pUpdateLayerConfigOnly) {\n            const update = (pInstance) => {\n                const parallaxInfo = Parallax.instanceWeakMap.get(pInstance);\n                parallaxInfo.y = pVerticalSpeed;\n            }\n\n            this.instances.forEach(pInstance => {\n                update(pInstance);\n            });\n            this.backgrounds.forEach(pInstance => {\n                update(pInstance);\n            });\n        }\n    }\n    /**\n     * Adds the instance to the parallax layer.\n     * When using this API the instance should already be on the map.\n     * The instance's 'plane' will be changed to match the plane of the layer.\n     * @param {Diob} pInstance - The instance to add to the layer.\n     * @param {Object} [pConfig] - The personal config of this instance. Akin to the parallax info passed via the `Parallax.add` API.\n     * @prop {number} [pConfig.x] - The horizontal speed of this instance. (This will be ignored and the layer's speed will be used.)\n     * @prop {number} [pConfig.y] - The vertical speed of this instance. (This will be ignored and the layer's speed will be used.)\n     * @prop {boolean} [pConfig.infiniteHorizontal] - Whether this instance will be treated as a horizontal background and loop seamlessly.\n     * @prop {boolean} [pConfig.infiniteVertical] - Whether this instance will be treated as a vertical background and loop seamlessly.\n     * @prop {number} [pConfig.cameraAnchorX] - The x position of the camera to anchor this instance to.\n     * @prop {number} [pConfig.cameraAnchorY] - The y position of the camera to anchor this instance to.\n     */\n    add(pInstance, pConfig) {\n        if (this.config.instances.has(pInstance)) return;\n        this.config.instances.add(pInstance);\n        const config = {\n            x: this.config.horizontalSpeed,\n            y: this.config.verticalSpeed,\n            // Not using chaining operator due to the docs parser not supporting it.\n            infiniteHorizontal: pConfig ? (pConfig.infiniteHorizontal ? pConfig.infiniteHorizontal : false) : false,\n            infiniteVertical: pConfig ? (pConfig.infiniteVertical ? pConfig.infiniteVertical : false) : false,\n            cameraAnchorX: pConfig ? (pConfig.cameraAnchorX ? pConfig.cameraAnchorX : undefined) : undefined,\n            cameraAnchorY: pConfig ? (pConfig.cameraAnchorY ? pConfig.cameraAnchorY : undefined) : undefined\n        }\n        pInstance.plane = this.config.plane;\n        Parallax.add(pInstance, config);\n    }\n    /**\n     * Removes the instance from the parallax layer.\n     * @param {Diob} pInstance - The instance to remove from the layer.\n     */\n    remove(pInstance) {\n        this.config.instances.delete(pInstance);\n        Parallax.remove(pInstance);\n    }\n}",
+    "content": "import { Parallax } from './parallax.mjs';\n\nexport class Layer {\n    /**\n     * The configuration object of this layer.\n     * @private\n     * @type {Object}\n     * @param {number} horizontalSpeed - The horizontal speed of the layer.\n     * @param {number} verticalSpeed - The vertical speed of the layer.\n     * @param {number} plane - The plane this parallax layer will occupy.\n     * @param {Diob[] | MapObject[]} backgrounds - An array of instances that will serve as the background. These are automatically toggled to repeat.\n     * @param {Set} instances - A set of instances currently on the layer.\n     */\n    config = {\n        // Move the instance with the camera if the parallax is set to 0\n        horizontalSpeed: 0,\n        verticalSpeed: 0,\n        plane: 1,\n        backgrounds: new Set(),\n        instances: new Set()\n    }\n    /**\n     * Creates a new Parallax layer with the supplied configuration.\n     * When creating a layer, all instances and backgrounds should already be on the map.\n     * @param {Object} pConfig - The configuration of the parallax layer.\n     * @prop {number} [pConfig.horizontalSpeed] - The horizontal speed of the layer.\n     * @prop {number} [pConfig.verticalSpeed] - The vertical speed of the layer. \n     * @prop {number} pConfig.plane - The plane this layer will occupy.\n     * @prop {boolean} [pConfig.infiniteHorizontal] - Whether the layer will loop infinitely horizontally.\n     * @prop {boolean} [pConfig.infiniteVertical] - Whether the layer will loop infinitely vertically.\n     * @prop {number} [pConfig.cameraAnchorX] - The x position of the camera to anchor this instance to.\n     * @prop {number} [pConfig.cameraAnchorY] - The y position of the camera to anchor this instance to.\n     * @prop {number} [pConfig.groundY] - The y pos of the ground.\n     * @param {Diob[] | MapObject[]} pConfig.backgrounds - An array of instances that will serve as the background. These are automatically toggled to repeat.\n     * @prop {Diob[] | MapObject[]} pConfig.instances - The instances that will be added to the layer. \n     * @prop {Diob | MapObject} [pConfig.ground] - The ground that will be added to the layer.\n     * @prop {string} [pConfig.groundMapname] - The ground mapname. \n     */\n    constructor(pConfig) {\n        this.updateConfigSpeed(pConfig, true);\n\n        if (!typeof pConfig.plane === 'number') {\n            Parallax.logger.prefix('Parallax-Module').warn('Expected a number for \"pConfig.plane\", but received:', typeof pConfig.plane, '\\n Default plane of \"1\" used.');\n        } else {\n            this.config.plane = pConfig.plane;\n        }\n\n        const instanceConfig = {\n            horizontalSpeed: this.config.horizontalSpeed,\n            verticalSpeed: this.config.verticalSpeed,\n            cameraAnchorX: pConfig.cameraAnchorX,\n            cameraAnchorY: pConfig.cameraAnchorY\n        }\n\n        if (Array.isArray(pConfig.instances)) {\n            pConfig.instances.forEach(pInstance => {\n                pInstance.plane = this.config.plane;\n                this.add(pInstance, instanceConfig);\n            });\n        }\n\n        if (Array.isArray(pConfig.backgrounds)) {\n            pConfig.backgrounds.forEach(pInstance => {\n                pInstance.plane = this.config.plane;\n                this.add(pInstance, { ...instanceConfig, infiniteHorizontal: pConfig.infiniteHorizontal, infiniteVertical: pConfig.infiniteVertical });\n            });\n        }\n\n        if (pConfig.ground) {\n            pConfig.ground.plane = this.config.plane;\n            this.add(pConfig.ground, { ...instanceConfig, infiniteHorizontal: pConfig.infiniteHorizontal, infiniteVertical: pConfig.infiniteVertical, ground: true, groundY: pConfig.groundY, groundMapname: pConfig.groundMapname });\n        }\n    }\n    /**\n     * Updates the configuration speed of the layer.\n     * @param {Object} pConfig - The speed configuration of the parallax layer.\n     * @prop {number} pConfig.horizontalSpeed - The horizontal speed of the layer.\n     * @prop {number} pConfig.verticalSpeed - The vertical speed of the layer. \n     * @param {boolean} pUpdateLayerConfigOnly - If only to update the layer config and not the instance config.\n     */\n    updateConfigSpeed(pConfig, pUpdateLayerConfigOnly) {\n        this.updateHorizontalSpeed(pConfig.horizontalSpeed, pUpdateLayerConfigOnly);\n        this.updateVerticalSpeed(pConfig.verticalSpeed, pUpdateLayerConfigOnly);\n    }\n    /**\n     * Updates the horizontal speed of this layer.\n     * @param {number} pHorizontalSpeed - The new horizontal speed.\n     * @param {boolean} pUpdateLayerConfigOnly - If only to update the layer config and not the instance config.\n     */\n    updateHorizontalSpeed(pHorizontalSpeed, pUpdateLayerConfigOnly) {\n        const inValidHorizontal = pHorizontalSpeed && typeof pHorizontalSpeed !== 'number';\n\n        if (inValidHorizontal) {\n            Parallax.logger.prefix('Parallax-Module').warn('Expected a number for \"pHorizontalSpeed\", but received:', typeof pHorizontalSpeed);\n            return\n        }\n\n        this.config.horizontalSpeed = pHorizontalSpeed;\n\n        if (!pUpdateLayerConfigOnly) {\n            const update = (pInstance) => {\n                const parallaxInfo = Parallax.instanceWeakMap.get(pInstance);\n                parallaxInfo.horizontalSpeed = pVerticalSpeed;\n            }\n\n            this.instances.forEach(pInstance => {\n                update(pInstance);\n            });\n            this.backgrounds.forEach(pInstance => {\n                update(pInstance);\n            });\n        }\n    }\n    /**\n     * Updates the vertical speed of the layer.\n     * @param {number} pVerticalSpeed - The new vertical speed. \n     * @param {boolean} pUpdateLayerConfigOnly - If only to update the layer config and not the instance config.\n     */\n    updateVerticalSpeed(pVerticalSpeed, pUpdateLayerConfigOnly) {\n        const inValidVertical = pVerticalSpeed && typeof pVerticalSpeed !== 'number';\n\n        if (inValidVertical) {\n            Parallax.logger.prefix('Parallax-Module').warn('Expected a number for \"pVerticalSpeed\", but received:', typeof pVerticalSpeed);\n            return\n        }\n\n        this.config.verticalSpeed = pVerticalSpeed;\n\n        if (!pUpdateLayerConfigOnly) {\n            const update = (pInstance) => {\n                const parallaxInfo = Parallax.instanceWeakMap.get(pInstance);\n                parallaxInfo.verticalSpeed = pVerticalSpeed;\n            }\n\n            this.instances.forEach(pInstance => {\n                update(pInstance);\n            });\n            this.backgrounds.forEach(pInstance => {\n                update(pInstance);\n            });\n        }\n    }\n    /**\n     * Adds the instance to the parallax layer.\n     * When using this API the instance should already be on the map.\n     * The instance's 'plane' will be changed to match the plane of the layer.\n     * @param {Diob} pInstance - The instance to add to the layer.\n     * @param {Object} pConfig - The personal config of this instance. Akin to the parallax info passed via the `Parallax.add` API.\n     * @prop {number} [pConfig.horizontalSpeed] - The horizontal speed of this instance. (This will be ignored and the layer's speed will be used.)\n     * @prop {number} [pConfig.verticalSpeed] - The vertical speed of this instance. (This will be ignored and the layer's speed will be used.)\n     * @prop {boolean} [pConfig.infiniteHorizontal] - Whether this instance will be treated as a horizontal background and loop seamlessly.\n     * @prop {boolean} [pConfig.infiniteVertical] - Whether this instance will be treated as a vertical background and loop seamlessly.\n     * @prop {number} [pConfig.cameraAnchorX] - The x position of the camera to anchor this instance to.\n     * @prop {number} [pConfig.cameraAnchorY] - The y position of the camera to anchor this instance to.\n     * @prop {boolean} [pConfig.ground] - If this instance is ground. (Should be infinite). Does not need to be on the map beforehand. It will be placed.\n     * @prop {number} [pConfig.groundY] - The y pos of the ground.\n     * @prop {string} [pConfig.groundMapname] - The ground mapname. \n     */\n    add(pInstance, pConfig) {\n        if (this.config.instances.has(pInstance)) return;\n        this.config.instances.add(pInstance);\n        const isGround = pConfig ? pConfig.ground : false;\n        const groundY = isGround ? pConfig.groundY : undefined;\n        const groundMapname = isGround ? pConfig.groundMapname : undefined;\n        const config = {\n            horizontalSpeed: this.config.horizontalSpeed,\n            verticalSpeed: this.config.verticalSpeed,\n            // Not using chaining operator due to the docs parser not supporting it.\n            infiniteHorizontal: pConfig ? (pConfig.infiniteHorizontal ? pConfig.infiniteHorizontal : false) : false,\n            infiniteVertical: pConfig ? (pConfig.infiniteVertical ? pConfig.infiniteVertical : false) : false,\n            cameraAnchorX: pConfig ? (pConfig.cameraAnchorX ? pConfig.cameraAnchorX : undefined) : undefined,\n            cameraAnchorY: pConfig ? (pConfig.cameraAnchorY ? pConfig.cameraAnchorY : undefined) : undefined,\n            ground: isGround,\n            groundY: groundY,\n            groundMapname: groundMapname\n        }\n        pInstance.plane = this.config.plane;\n        Parallax.add(pInstance, config);\n    }\n    /**\n     * Removes the instance from the parallax layer.\n     * @param {Diob} pInstance - The instance to remove from the layer.\n     */\n    remove(pInstance) {\n        this.config.instances.delete(pInstance);\n        Parallax.remove(pInstance);\n    }\n}",
     "static": true,
     "longname": "/Users/doubleactii/Documents/Github/Parallax/src/layer.mjs",
     "access": "public",
@@ -575,7 +772,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 49,
+    "__docId__": 57,
     "kind": "class",
     "name": "Layer",
     "memberof": "src/layer.mjs",
@@ -591,7 +788,7 @@
     "interface": false
   },
   {
-    "__docId__": 50,
+    "__docId__": 58,
     "kind": "member",
     "name": "config",
     "memberof": "src/layer.mjs~Layer",
@@ -663,7 +860,7 @@
     }
   },
   {
-    "__docId__": 51,
+    "__docId__": 59,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/layer.mjs~Layer",
@@ -673,11 +870,11 @@
     "longname": "src/layer.mjs~Layer#constructor",
     "access": "public",
     "description": null,
-    "lineNumber": 36,
+    "lineNumber": 39,
     "undocument": true
   },
   {
-    "__docId__": 52,
+    "__docId__": 60,
     "kind": "method",
     "name": "updateConfigSpeed",
     "memberof": "src/layer.mjs~Layer",
@@ -687,7 +884,7 @@
     "longname": "src/layer.mjs~Layer#updateConfigSpeed",
     "access": "public",
     "description": "Updates the configuration speed of the layer.",
-    "lineNumber": 73,
+    "lineNumber": 81,
     "unknown": [
       {
         "tagName": "@prop",
@@ -723,7 +920,7 @@
     "return": null
   },
   {
-    "__docId__": 53,
+    "__docId__": 61,
     "kind": "method",
     "name": "updateHorizontalSpeed",
     "memberof": "src/layer.mjs~Layer",
@@ -733,7 +930,7 @@
     "longname": "src/layer.mjs~Layer#updateHorizontalSpeed",
     "access": "public",
     "description": "Updates the horizontal speed of this layer.",
-    "lineNumber": 82,
+    "lineNumber": 90,
     "params": [
       {
         "nullable": null,
@@ -759,7 +956,7 @@
     "return": null
   },
   {
-    "__docId__": 54,
+    "__docId__": 62,
     "kind": "method",
     "name": "updateVerticalSpeed",
     "memberof": "src/layer.mjs~Layer",
@@ -769,7 +966,7 @@
     "longname": "src/layer.mjs~Layer#updateVerticalSpeed",
     "access": "public",
     "description": "Updates the vertical speed of the layer.",
-    "lineNumber": 111,
+    "lineNumber": 119,
     "params": [
       {
         "nullable": null,
@@ -795,7 +992,7 @@
     "return": null
   },
   {
-    "__docId__": 55,
+    "__docId__": 63,
     "kind": "method",
     "name": "add",
     "memberof": "src/layer.mjs~Layer",
@@ -805,15 +1002,15 @@
     "longname": "src/layer.mjs~Layer#add",
     "access": "public",
     "description": "Adds the instance to the parallax layer.\nWhen using this API the instance should already be on the map.\nThe instance's 'plane' will be changed to match the plane of the layer.",
-    "lineNumber": 148,
+    "lineNumber": 159,
     "unknown": [
       {
         "tagName": "@prop",
-        "tagValue": "{number} [pConfig.x] - The horizontal speed of this instance. (This will be ignored and the layer's speed will be used.)"
+        "tagValue": "{number} [pConfig.horizontalSpeed] - The horizontal speed of this instance. (This will be ignored and the layer's speed will be used.)"
       },
       {
         "tagName": "@prop",
-        "tagValue": "{number} [pConfig.y] - The vertical speed of this instance. (This will be ignored and the layer's speed will be used.)"
+        "tagValue": "{number} [pConfig.verticalSpeed] - The vertical speed of this instance. (This will be ignored and the layer's speed will be used.)"
       },
       {
         "tagName": "@prop",
@@ -830,6 +1027,18 @@
       {
         "tagName": "@prop",
         "tagValue": "{number} [pConfig.cameraAnchorY] - The y position of the camera to anchor this instance to."
+      },
+      {
+        "tagName": "@prop",
+        "tagValue": "{boolean} [pConfig.ground] - If this instance is ground. (Should be infinite). Does not need to be on the map beforehand. It will be placed."
+      },
+      {
+        "tagName": "@prop",
+        "tagValue": "{number} [pConfig.groundY] - The y pos of the ground."
+      },
+      {
+        "tagName": "@prop",
+        "tagValue": "{string} [pConfig.groundMapname] - The ground mapname. "
       }
     ],
     "params": [
@@ -849,7 +1058,7 @@
           "Object"
         ],
         "spread": false,
-        "optional": true,
+        "optional": false,
         "name": "pConfig",
         "description": "The personal config of this instance. Akin to the parallax info passed via the `Parallax.add` API."
       }
@@ -857,7 +1066,7 @@
     "return": null
   },
   {
-    "__docId__": 56,
+    "__docId__": 64,
     "kind": "method",
     "name": "remove",
     "memberof": "src/layer.mjs~Layer",
@@ -867,7 +1076,7 @@
     "longname": "src/layer.mjs~Layer#remove",
     "access": "public",
     "description": "Removes the instance from the parallax layer.",
-    "lineNumber": 167,
+    "lineNumber": 184,
     "params": [
       {
         "nullable": null,
@@ -883,10 +1092,10 @@
     "return": null
   },
   {
-    "__docId__": 57,
+    "__docId__": 65,
     "kind": "file",
     "name": "src/parallax.mjs",
-    "content": "import { Logger } from './vendor/logger.min.mjs';\nimport { Layer } from './layer.mjs'\n\nclass ParallaxSingleton {\n\t/**\n\t * The version of the module.\n\t */\n\tversion = \"VERSION_REPLACE_ME\";\n    /** The logger module this module uses to log errors / logs\n     * @private\n     * @type {Object}\n     */\n    logger = new Logger();\n    /**\n     * The layer class.\n     * @type {Layer}\n     */\n    Layer = Layer;\n    /**\n     * An set of instances that use the parallax system.\n     * @private\n     * @type {Set}\n     */\n    instances = new Set();\n    /**\n     * Weakmap to store info on instances used in this module.\n     * @private\n     * @type {WeakMap}\n     */\n    instanceWeakMap = new WeakMap();\n    /**\n     * The last position of the camera.\n     * @private\n     * @type {x: number | null, y: number | null}\n     */\n    lastCamPos = { x: null, y: null };\n    /**\n     * The virtual position on the map where the layers look natural together.\n     * @private\n     * @type {x: number | null, y: number | null}\n     */\n    cameraAnchor = { x: null, y: null };\n    /**\n     * Whether the anchor y position is set.\n     * @private\n     * @type {boolean}\n     */\n    anchorYSet = false;\n    /**\n     * Whether the anchor x position is set.\n     * @private\n     * @type {boolean}\n     */\n    anchorXSet = false;\n    /**\n     * @private\n     */\n\tconstructor() {\n        this.logger.registerType('Parallax-Module', '#ff6600');\n\t}\n    /**\n     * Gets the camera position.\n     * @returns {{x: number, y: number}} - The camera position.\n     */\n    getCamPos() {\n        const viewEye = VYLO.Client.getViewEye();\n        if (viewEye) {\n            return { x: viewEye.x, y: viewEye.y };\n        }\n        return { x: null, y: null };\n    }\n    /**\n     * Whether the last camera position is set.\n     * @returns {boolean} - Whether the last camera position is set.\n     */\n    hasLastCamPos() {\n        return this.lastCamPos.x !== null && this.lastCamPos.y !== null;\n    }\n    /**\n     * Sets the last camera position.\n     * @param {number} pX - The last x position of the camera.\n     * @param {number} pY - The last y position of the camera.\n     */\n    setLastCamPos(pX, pY) {\n        this.lastCamPos.x = pX;\n        this.lastCamPos.y = pY;\n    }\n    /**\n     * Sets the anchor position for the parallax system.\n     * @param {{ x: number, y: number }} pCameraAnchor - The virtual position on the map where the layers look natural together.\n     */\n    setCameraAnchor(pCameraAnchor) {\n        this.setCameraAnchorX(pCameraAnchor.x);\n        this.setCameraAnchorY(pCameraAnchor.y);\n    }\n    /**\n     * Sets the anchor x position for the parallax system.\n     * @param {number} pXAnchor - The x position to set the anchor to.\n     */\n    setCameraAnchorX(pXAnchor) {\n        this.cameraAnchor.x = pXAnchor;\n        this.anchorXSet = true;\n    }\n    /**\n     * Sets the anchor y position for the parallax system.\n     * @param {number} pYAnchor - The y position to set the anchor to.\n     */\n    setCameraAnchorY(pYAnchor) {\n        this.cameraAnchor.y = pYAnchor;\n        this.anchorYSet = true;\n    }\n    /**\n     * Gets the anchor position.\n     * @returns {{x: number | null, y: number | null}} - The anchor position.\n     */\n    getCameraAnchor() {\n        return { ...this.cameraAnchor };\n    }\n    /**\n     * Gets the anchor x position.\n     * @returns {number | null} - The anchor x position.\n     */\n    getAnchorX() {\n        return this.cameraAnchor.x;\n    }\n    /**\n     * Gets the anchor y position.\n     * @returns {number | null} - The anchor x position.\n     */\n    getAnchorY() {\n        return this.cameraAnchor.y;\n    }\n    /**\n     * Resets the anchor position.\n     */\n    resetAnchor() {\n        this.resetAnchorX();\n        this.resetAnchorY();\n    }\n    /**\n     * Resets the anchor x position.\n     */\n    resetAnchorX() {\n        this.cameraAnchor.x = null;\n        this.anchorXSet = false;\n    }\n    /**\n     * Resets the anchor y position.\n     */\n    resetAnchorY() {\n        this.cameraAnchor.y = null;\n        this.anchorYSet = false;\n    }\n    /**\n     * Whether the anchor x position is set.\n     * @returns {boolean} - Whether the anchor x position is set.\n     */\n    isAnchorXSet() {\n        return this.anchorXSet;\n    }\n    /**\n     * Whether the anchor y position is set.\n     * @returns {boolean} - Whether the anchor y position is set.\n     */\n    isAnchorYSet() {\n        return this.anchorYSet;\n    }\n    /**\n     * Creates two clones of the instance to loop infinitely.\n     * @private\n     * @param {Diob} pInstance - The instance to base the clones off of.\n     * @param {boolean} pBypassEvent - Whether to bypass the onRelocated event.\n     * @returns {Diob[]} - An array of the two clones.\n     */\n    createLoopInstances(pInstance, pBypassEvent) {\n        // Create a left and right clone\n        const first = VYLO.newDiob('MapObject');\n        const second = VYLO.newDiob('MapObject');\n\n        const children = [first, second];\n\n        first.isCullable = false;\n        second.isCullable = false;\n\n        // Make the left and right clone particle look the same as the initial instance\n        first.setAppearance(pInstance);\n        second.setAppearance(pInstance);\n\n        if (!pBypassEvent) {\n            // Do not mutate event if one is found. Call alongside it.\n            const oldRelocatedEvent = pInstance.onRelocated;\n            // When the main instance moves, move the clones with their relative position to it.\n            if (typeof oldRelocatedEvent === 'function') {\n                pInstance.onRelocated = (pX, pY) => {\n                    oldRelocatedEvent.call(pInstance, pX, pY);\n                    this.handleOnRelocated(pInstance, children);\n                }\n            } else {\n                pInstance.onRelocated = (pX, pY) => {\n                    this.handleOnRelocated(pInstance, children);\n                }\n            }\n        }\n\n        return children;\n    }\n    /**\n     * Enables infinite looping for the horizontal plane.\n     * @private\n     * @param {Diob} pInstance - The instance to loop.\n     * @param {boolean} pBypassEvent - Whether to bypass the onRelocated event.\n     */\n    toggleInfiniteHorizontal(pInstance, pBypassEvent) {\n        const [left, right] = this.createLoopInstances(pInstance, pBypassEvent);\n\n        // Position the left clone\n        left.x = pInstance.x - pInstance.icon.width;\n        left.y = pInstance.y;\n\n        // Position the right clone\n        right.x = pInstance.x + pInstance.icon.width;\n        right.y = pInstance.y;\n\n        // Store the clones in a temporary array\n        const children = [left, right];\n        // Loop the clones and store their relative positions to the main instance\n        children.forEach((pChild) => {\n            pChild.relativeX = pChild.x - pInstance.x;\n            pChild.relativeY = pChild.y - pInstance.y;\n        });\n    }\n\n    /**\n     * Enables infinite looping for the vertical plane.\n     * @private\n     * @param {Diob} pInstance - The instance to loop.\n     * @param {boolean} pBypassEvent - Whether to bypass the onRelocated event.\n     */\n    toggleInfiniteVertical(pInstance, pBypassEvent) {\n        const [top, bottom] = this.createLoopInstances(pInstance, pBypassEvent);\n\n        // Position the left clone\n        top.x = pInstance.x;\n        top.y = pInstance.y - pInstance.icon.height;\n\n        // Position the right clone\n        bottom.x = pInstance.x;\n        bottom.y = pInstance.y + pInstance.icon.height;\n\n        // Store the clones in a temporary array\n        const children = [top, bottom];\n        // Loop the clones and store their relative positions to the main instance\n        children.forEach((pChild) => {\n            pChild.relativeX = pChild.x - pInstance.x;\n            pChild.relativeY = pChild.y - pInstance.y;\n        });\n    }\n    /**\n     * Toggle infinite looping for both the horizontal and vertical planes.\n     * @private\n     * @param {Diob} pInstance - The instance to loop.\n     */\n    toggleInfinitePlanes(pInstance) {\n        this.toggleInfiniteHorizontal(pInstance, true);\n        this.toggleInfiniteVertical(pInstance);\n    }\n    /**\n     * Adds an instance to the parallax system.\n     * Call this first and then add your instance to the map.\n     * @private\n     * @param {Object} pInstance - The instance to add to the parallax system.\n     * @param {Object} pParallaxConfig - The parallax info that tells this module how to control this instance.\n     * @prop {number} pParallaxConfig.x - The x multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 1 to move with camera.\n     * @prop {number} pParallaxConfig.y - The y multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 1 to move with camera.\n     * @prop {boolean} pParallaxConfig.infiniteHorizontal - Whether this instance will infiniteHorizontal endlessly.\n     * @prop {boolean} pParallaxConfig.infiniteVertical - Whether this instance will infiniteVertical endlessly.\n     * @prop {number} pParallaxConfig.cameraAnchorX - The x position of the camera to anchor this instance to.\n     * @prop {number} pParallaxConfig.cameraAnchorY - The y position of the camera to anchor this instance to.\n     * \n     * ## The following is how the speed of the parallax multipliers are factored in.  \n     (x | y) < 1 = faster behind the camera eg: (-> Player goes this way = Instance goes this way <-)  \n     (x | y) > 1 faster against the camera eg: (-> Player goes this way = Instance goes this way ->)  \n     (x | y) = 0 = static to the camera eg: (-> Player goes this way = Instance does nothing, and moves with the camera)   \n     (x | y) = 1 = moves with the camera eg: (-> Player goes this way = Instance goes this way -> at position of camera)  \n     */\n    add(pInstance, pParallaxConfig) {\n        if (!pInstance) {\n            this.logger.prefix('Parallax-Module').error('No pInstance passed!');\n            return;\n        }\n\n        if (pParallaxConfig instanceof Object) {\n            if (!this.instances.has(pInstance)) {\n                const { x, y, mapName } = pInstance;\n                // Clone the parallax object\n                const parallaxConfig = { ...pParallaxConfig };\n                // Set the parallax info to the instance\n                this.instanceWeakMap.set(pInstance, parallaxConfig);\n                this.instances.add(pInstance);\n                if (typeof x === 'number' && typeof y === 'number' && typeof mapName === 'string') {\n                    pInstance.setPos(x, y, mapName);\n                }\n                this.init(pInstance, parallaxConfig);\n            }\n        } else {\n            this.logger.prefix('Parallax-Module').error('No pParallaxConfig passed or invalid type found!');\n        }\n    }\n    /**\n     * Initializes this instance.\n     * @private\n     * @param {Object} pInstance - The instance to initialize.\n     * @param {Object} pParallaxConfig - The parallax info that tells this module how to control this instance.\n     * @prop {number} pParallaxConfig.x - The x multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 0 to move with camera.\n     * @prop {number} pParallaxConfig.y - The y multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 0 to move with camera.\n     * @prop {boolean} pParallaxConfig.infiniteHorizontal - Whether this instance will loop endlessly.\n     * @prop {boolean} pParallaxConfig.infiniteVertical - Whether this instance will loop endlessly.\n     * @prop {number} pParallaxConfig.cameraAnchorX - The x position of the camera to anchor this instance to.\n     * @prop {number} pParallaxConfig.cameraAnchorY - The y position of the camera to anchor this instance to.\n     */\n    init(pInstance, pParallaxConfig) {\n        if (!VYLO) {\n            this.logger.prefix('Parallax-Module').error('VYLO not found! This module depends on the VYLO object being in the global name space.');\n            return;\n        }\n\n        const { x, y } = this.getCamPos();\n\n        if (!this.hasLastCamPos()) {\n            this.setLastCamPos(x, y);\n        }\n\n        // Update the instance's initial position based on the anchor position\n        this.updateInstance(pInstance, x, y, { x: pParallaxConfig.cameraAnchorX, y: pParallaxConfig.cameraAnchorY });\n\n        const { infiniteHorizontal, infiniteVertical } = pParallaxConfig;\n\n        if (infiniteHorizontal && infiniteVertical) {\n            this.toggleInfinitePlanes(pInstance);\n        } else if (infiniteHorizontal) {\n            this.toggleInfiniteHorizontal(pInstance);\n        } else if (infiniteVertical) {\n            this.toggleInfiniteVertical(pInstance);\n        }\n    }\n    /**\n     * Removes an instance to the parallax system.\n     * @param {Object} pInstance - The instance to remove to the parallax system.\n     */\n    remove(pInstance) {\n        if (!pInstance) {\n            this.logger.prefix('Parallax-Module').error('No pInstance passed!');\n            return;\n        }\n\n        if (this.instances.has(pInstance)) {\n            this.instances.delete(pInstance);\n            this.instanceWeakMap.delete(pInstance);\n        }\n    }\n    /**\n     * Updates the parallax system.\n     * @param {number} pCameraX - The x position of the camera.\n     * @param {number} pCameraY - The y position of the camera.\n    */\n    update(pCameraX = 0, pCameraY = 0) {\n        for (const instance of this.instances) {\n            this.updateInstance(instance, pCameraX, pCameraY);\n        }\n\n        this.lastCamPos.x = pCameraX;\n        this.lastCamPos.y = pCameraY;\n    }\n    /**\n     * Updates the instance's position based on the camera's position.\n     * @private\n     * @param {Diob} pInstance - The instance to update.\n     * @param {number} pCameraX - The x position of the camera.\n     * @param {number} pCameraY - The y position of the camera.\n     * @param {{x: number | null, y: number | null}} [pAnchor] - The camera anchor position to use.\n     */\n    updateInstance(pInstance, pCameraX, pCameraY, pAnchor) {\n        let lastCamPosX = this.lastCamPos.x;\n        let lastCamPosY = this.lastCamPos.y;\n\n        if (pAnchor) {\n            const x = this.getAnchorX() || pAnchor.x;\n            const y = this.getAnchorY() || pAnchor.y;\n\n            if (typeof x === 'number') {\n                lastCamPosX = x;\n            }\n\n            if (typeof y === 'number') {\n                lastCamPosY = y;\n            }\n        }\n\n        const parallaxConfig = this.instanceWeakMap.get(pInstance);\n\n        // Move the instance with the camera if the parallax is set to 0\n        const isBackgroundX = parallaxConfig.x === 0;\n        const isBackgroundY = parallaxConfig.y === 0;\n\n        // Position to set the instance to.\n        let x;\n        let y;\n\n        if (isBackgroundX) {\n            x = pCameraX - pInstance.icon.width / 2;\n        } else {\n            let deltaX = pCameraX - lastCamPosX;\n            let distX = deltaX * parallaxConfig.x;\n            x = pInstance.x + distX;\n        }\n\n        if (isBackgroundY) {\n            y = pCameraY - pInstance.icon.height / 2;\n        } else {\n            let deltaY = pCameraY - lastCamPosY;\n            let distY = deltaY * parallaxConfig.y;\n            y = pInstance.y + distY;\n        }\n\n        // Set the position\n        pInstance.x = x;\n        pInstance.y = y;\n\n        // Logic cannot be ran on static background instances as they should not loop\n        if (!isBackgroundX && !isBackgroundY) {\n            if (parallaxConfig.infiniteHorizontal) {\n                // The start pos + total width\n                const rightEnd = pInstance.x + pInstance.icon.width;\n                // The start pos - total width / 6\n                const leftEnd = pInstance.x - pInstance.icon.width / 6;\n                if (pCameraX > rightEnd) {\n                    pInstance.x += pInstance.icon.width;\n                } else if (pCameraX < leftEnd) {\n                    pInstance.x -= pInstance.icon.width;\n                }\n            }\n\n            if (parallaxConfig.infiniteVertical) {\n                // The start pos + total height\n                const bottomEnd = pInstance.x + pInstance.icon.height;\n                // The start pos - total height / 6\n                const topEnd = pInstance.x - pInstance.icon.height / 6;\n                if (pCameraY > bottomEnd) {\n                    pInstance.y += pInstance.icon.height;\n                } else if (pCameraY < topEnd) {\n                    pInstance.y -= pInstance.icon.height;\n                }\n            }\n        }\n    }\n    /**\n     * Handles the onRelocated event for instances. Moves their children in relativity to their position.\n     * @private\n     * @param {Diob | MapObject} pInstance - The instance to handle the event for.\n     * @param {MapObject[]} pChildren - An array of children belonging to the instance.\n     */\n    handleOnRelocated(pInstance, pChildren) {\n        // Update the children's position when the parent moves\n        pChildren.forEach((pChild) => {\n            pChild.x = pInstance.x + pChild.relativeX;\n            pChild.y = pInstance.y + pChild.relativeY;\n            pChild.mapName = pInstance.mapName;\n        });\n    }\n}\n\nconst Parallax = new ParallaxSingleton();\nexport { Parallax };",
+    "content": "import { Logger } from './vendor/logger.min.mjs';\nimport { Layer } from './layer.mjs'\nimport { EventEmitter } from './events.mjs';\n\nclass ParallaxSingleton {\n\t/**\n\t * The version of the module.\n\t */\n\tversion = \"VERSION_REPLACE_ME\";\n    /** The logger module this module uses to log errors / logs\n     * @private\n     * @type {Object}\n     */\n    logger = new Logger();\n    /**\n     * The event emitter.\n     */\n    events = new EventEmitter();\n    /**\n     * The layer class.\n     * @type {Layer}\n     */\n    Layer = Layer;\n    /**\n     * An set of instances that use the parallax system.\n     * @private\n     * @type {Set}\n     */\n    instances = new Set();\n    /**\n     * Weakmap to store info on instances used in this module.\n     * @private\n     * @type {WeakMap}\n     */\n    instanceWeakMap = new WeakMap();\n    /**\n     * The last position of the camera.\n     * @private\n     * @type {x: number | null, y: number | null}\n     */\n    lastCamPos = { x: null, y: null };\n    /**\n     * The virtual position on the map where the layers look natural together.\n     * @private\n     * @type {x: number | null, y: number | null}\n     */\n    cameraAnchor = { x: null, y: null };\n    /**\n     * Whether the anchor y position is set.\n     * @private\n     * @type {boolean}\n     */\n    anchorYSet = false;\n    /**\n     * Whether the anchor x position is set.\n     * @private\n     * @type {boolean}\n     */\n    anchorXSet = false;\n    /**\n     * @private\n     */\n\tconstructor() {\n        this.logger.registerType('Parallax-Module', '#ff6600');\n\t}\n    /**\n     * Gets the camera position.\n     * @returns {{x: number, y: number}} - The camera position.\n     */\n    getCamPos() {\n        const viewEye = VYLO.Client.getViewEye();\n        if (viewEye) {\n            return { x: viewEye.x, y: viewEye.y };\n        }\n        return { x: null, y: null };\n    }\n    /**\n     * Whether the last camera position is set.\n     * @returns {boolean} - Whether the last camera position is set.\n     */\n    hasLastCamPos() {\n        return this.lastCamPos.x !== null && this.lastCamPos.y !== null;\n    }\n    /**\n     * Sets the last camera position.\n     * @param {number} pX - The last x position of the camera.\n     * @param {number} pY - The last y position of the camera.\n     */\n    setLastCamPos(pX, pY) {\n        this.lastCamPos.x = pX;\n        this.lastCamPos.y = pY;\n    }\n    /**\n     * Sets the anchor position for the parallax system.\n     * @param {{ x: number, y: number }} pCameraAnchor - The virtual position on the map where the layers look natural together.\n     */\n    setCameraAnchor(pCameraAnchor) {\n        this.setCameraAnchorX(pCameraAnchor.x);\n        this.setCameraAnchorY(pCameraAnchor.y);\n    }\n    /**\n     * Sets the anchor x position for the parallax system.\n     * @param {number} pXAnchor - The x position to set the anchor to.\n     */\n    setCameraAnchorX(pXAnchor) {\n        this.cameraAnchor.x = pXAnchor;\n        this.anchorXSet = true;\n    }\n    /**\n     * Sets the anchor y position for the parallax system.\n     * @param {number} pYAnchor - The y position to set the anchor to.\n     */\n    setCameraAnchorY(pYAnchor) {\n        this.cameraAnchor.y = pYAnchor;\n        this.anchorYSet = true;\n    }\n    /**\n     * Gets the anchor position.\n     * @returns {{x: number | null, y: number | null}} - The anchor position.\n     */\n    getCameraAnchor() {\n        return { ...this.cameraAnchor };\n    }\n    /**\n     * Gets the anchor x position.\n     * @returns {number | null} - The anchor x position.\n     */\n    getAnchorX() {\n        return this.cameraAnchor.x;\n    }\n    /**\n     * Gets the anchor y position.\n     * @returns {number | null} - The anchor x position.\n     */\n    getAnchorY() {\n        return this.cameraAnchor.y;\n    }\n    /**\n     * Resets the anchor position.\n     */\n    resetAnchor() {\n        this.resetAnchorX();\n        this.resetAnchorY();\n    }\n    /**\n     * Resets the anchor x position.\n     */\n    resetAnchorX() {\n        this.cameraAnchor.x = null;\n        this.anchorXSet = false;\n    }\n    /**\n     * Resets the anchor y position.\n     */\n    resetAnchorY() {\n        this.cameraAnchor.y = null;\n        this.anchorYSet = false;\n    }\n    /**\n     * Whether the anchor x position is set.\n     * @returns {boolean} - Whether the anchor x position is set.\n     */\n    isAnchorXSet() {\n        return this.anchorXSet;\n    }\n    /**\n     * Whether the anchor y position is set.\n     * @returns {boolean} - Whether the anchor y position is set.\n     */\n    isAnchorYSet() {\n        return this.anchorYSet;\n    }\n    /**\n     * Creates two clones of the instance to loop infinitely.\n     * @private\n     * @param {Diob} pInstance - The instance to base the clones off of.\n     * @param {boolean} pBypassEvent - Whether to bypass the onRelocated event.\n     * @returns {Diob[]} - An array of the two clones.\n     */\n    createLoopInstances(pInstance) {\n        // Create a left and right clone\n        const first = VYLO.newDiob('MapObject');\n        const second = VYLO.newDiob('MapObject');\n\n        const children = [first, second];\n\n        first.isCullable = false;\n        second.isCullable = false;\n\n        // Make the left and right clone particle look the same as the initial instance\n        first.setAppearance(pInstance);\n        second.setAppearance(pInstance);\n\n        return children;\n    }\n    /**\n     * Enables infinite looping for the horizontal plane.\n     * @private\n     * @param {Diob} pInstance - The instance to loop.\n     */\n    toggleInfiniteHorizontal(pInstance) {\n        const [left, right] = this.createLoopInstances(pInstance);\n\n        // Position the left clone\n        left.x = pInstance.x - pInstance.icon.width;\n        left.y = pInstance.y;\n        left.mapName = pInstance.mapName;\n\n        // Position the right clone\n        right.x = pInstance.x + pInstance.icon.width;\n        right.y = pInstance.y;\n        right.mapName = pInstance.mapName;\n\n        // Store the clones in a temporary array\n        const children = [left, right];\n        const parallaxConfig = this.instanceWeakMap.get(pInstance);\n\n        // Store the children\n        parallaxConfig.horizontalChildren = children;\n\n        // Loop the clones and store their relative positions to the main instance\n        children.forEach((pChild) => {\n            pChild.relativeX = pChild.x - pInstance.x;\n            pChild.relativeY = pChild.y - pInstance.y;\n        });\n    }\n\n    /**\n     * Enables infinite looping for the vertical plane.\n     * @private\n     * @param {Diob} pInstance - The instance to loop.\n     */\n    toggleInfiniteVertical(pInstance) {\n        const [top, bottom] = this.createLoopInstances(pInstance);\n\n        // Position the left clone\n        top.x = pInstance.x;\n        top.y = pInstance.y - pInstance.icon.height;\n        top.mapName = pInstance.mapName;\n\n        // Position the right clone\n        bottom.x = pInstance.x;\n        bottom.y = pInstance.y + pInstance.icon.height;\n        bottom.mapName = pInstance.mapName;\n\n        // Store the clones in a temporary array\n        const children = [top, bottom];\n        const parallaxConfig = this.instanceWeakMap.get(pInstance);\n\n        // Store the children\n        parallaxConfig.verticalChildren = children;\n\n        // Loop the clones and store their relative positions to the main instance\n        children.forEach((pChild) => {\n            pChild.relativeX = pChild.x - pInstance.x;\n            pChild.relativeY = pChild.y - pInstance.y;\n        });\n    }\n    /**\n     * Toggle infinite looping for both the horizontal and vertical planes.\n     * @private\n     * @param {Diob} pInstance - The instance to loop.\n     */\n    toggleInfinitePlanes(pInstance) {\n        this.toggleInfiniteHorizontal(pInstance);\n        this.toggleInfiniteVertical(pInstance);\n    }\n    /**\n     * Adds an instance to the parallax system.\n     * Call this first and then add your instance to the map.\n     * @private\n     * @param {Object} pInstance - The instance to add to the parallax system.\n     * @param {Object} pConfig - The parallax info that tells this module how to control this instance.\n     * @prop {number} pConfig.horizontalSpeed - The x multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 1 to move with camera.\n     * @prop {number} pConfig.verticalSpeed - The y multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 1 to move with camera.\n     * @prop {boolean} [pConfig.infiniteHorizontal] - Whether this instance will infiniteHorizontal endlessly.\n     * @prop {boolean} [pConfig.infiniteVertical] - Whether this instance will infiniteVertical endlessly.\n     * @prop {number} [pConfig.cameraAnchorX] - The x position of the camera to anchor this instance to.\n     * @prop {number} [pConfig.cameraAnchorY] - The y position of the camera to anchor this instance to.\n     * @prop {boolean} [pConfig.ground] - If this instance is ground.\n     * @prop {number} [pConfig.groundY] - The y pos of the ground.\n     * @prop {string} [pConfig.groundMapname] - The ground mapname.\n     * \n     * ## The following is how the speed of the parallax multipliers are factored in.  \n     (x | y) < 1 = faster behind the camera eg: (-> Player goes this way = Instance goes this way <-)  \n     (x | y) > 1 faster against the camera eg: (-> Player goes this way = Instance goes this way ->)  \n     (x | y) = 0 = static to the camera eg: (-> Player goes this way = Instance does nothing, and moves with the camera)   \n     (x | y) = 1 = moves with the camera eg: (-> Player goes this way = Instance goes this way -> at position of camera)  \n     */\n    add(pInstance, pConfig) {\n        if (!pInstance) {\n            this.logger.prefix('Parallax-Module').error('No pInstance passed!');\n            return;\n        }\n\n        if (pConfig instanceof Object) {\n            if (!this.instances.has(pInstance)) {\n                const { x, y, mapName } = pInstance;\n                // Clone the parallax object\n                const parallaxConfig = { ...pConfig };\n                // Set the parallax info to the instance\n                this.instanceWeakMap.set(pInstance, parallaxConfig);\n                this.instances.add(pInstance);\n                \n                if (typeof x === 'number' && typeof y === 'number' && typeof mapName === 'string') {\n                    pInstance.setPos(x, y, mapName);\n                }\n                this.init(pInstance, parallaxConfig);\n            }\n        } else {\n            this.logger.prefix('Parallax-Module').error('No pConfig passed or invalid type found!');\n        }\n    }\n    /**\n     * Initializes this instance.\n     * @private\n     * @param {Object} pInstance - The instance to initialize.\n     * @param {Object} pConfig - The parallax info that tells this module how to control this instance.\n     * @prop {number} pConfig.horizontalSpeed - The x multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 0 to move with camera.\n     * @prop {number} pConfig.verticalSpeed - The y multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 0 to move with camera.\n     * @prop {boolean} [pConfig.infiniteHorizontal] - Whether this instance will loop endlessly.\n     * @prop {boolean} [pConfig.infiniteVertical] - Whether this instance will loop endlessly.\n     * @prop {number} [pConfig.cameraAnchorX] - The x position of the camera to anchor this instance to.\n     * @prop {number} [pConfig.cameraAnchorY] - The y position of the camera to anchor this instance to.\n     */\n    init(pInstance, pConfig) {\n        if (!VYLO) {\n            this.logger.prefix('Parallax-Module').error('VYLO not found! This module depends on the VYLO object being in the global name space.');\n            return;\n        }\n\n        const { x, y } = this.getCamPos();\n\n        if (!this.hasLastCamPos()) {\n            this.setLastCamPos(x, y);\n        }\n\n        const { ground, groundY, groundMapname, infiniteHorizontal, infiniteVertical } = pConfig;\n\n        if (ground) {\n            pInstance.x = x - pInstance.icon.width / 2;\n            pInstance.y = groundY;\n            pInstance.mapName = groundMapname;\n        } else {\n            // Update the instance's initial position based on the anchor position\n            this.updateInstance(pInstance, x, y, { x: pConfig.cameraAnchorX, y: pConfig.cameraAnchorY });\n        }\n\n        if (infiniteHorizontal && infiniteVertical) {\n            this.toggleInfinitePlanes(pInstance);\n        } else if (infiniteHorizontal) {\n            this.toggleInfiniteHorizontal(pInstance);\n        } else if (infiniteVertical) {\n            this.toggleInfiniteVertical(pInstance);\n        }\n    }\n    /**\n     * Removes an instance to the parallax system.\n     * @param {Object} pInstance - The instance to remove to the parallax system.\n     */\n    remove(pInstance) {\n        if (!pInstance) {\n            this.logger.prefix('Parallax-Module').error('No pInstance passed!');\n            return;\n        }\n\n        if (this.instances.has(pInstance)) {\n            this.instances.delete(pInstance);\n            this.instanceWeakMap.delete(pInstance);\n        }\n    }\n    /**\n     * Updates the parallax system.\n     * @param {number} pCameraX - The x position of the camera.\n     * @param {number} pCameraY - The y position of the camera.\n    */\n    update(pCameraX = 0, pCameraY = 0) {\n        for (const instance of this.instances) {\n            this.updateInstance(instance, pCameraX, pCameraY);\n        }\n\n        this.lastCamPos.x = pCameraX;\n        this.lastCamPos.y = pCameraY;\n    }\n    /**\n     * Updates the instance's position based on the camera's position.\n     * @private\n     * @param {Diob} pInstance - The instance to update.\n     * @param {number} pCameraX - The x position of the camera.\n     * @param {number} pCameraY - The y position of the camera.\n     * @param {{x: number | null, y: number | null}} [pAnchor] - The camera anchor position to use.\n     */\n    updateInstance(pInstance, pCameraX, pCameraY, pAnchor) {\n        const { infiniteHorizontal, infiniteVertical, ground, horizontalSpeed, verticalSpeed } = this.instanceWeakMap.get(pInstance);\n\n        // Move the instance with the camera if the parallax is set to 0\n        const isBackgroundX = !ground && horizontalSpeed === 0;\n        const isBackgroundY = !ground && verticalSpeed === 0;\n\n        let lastCamPosX = this.lastCamPos.x;\n        let lastCamPosY = this.lastCamPos.y;\n\n        if (!ground) {\n            if (pAnchor) {\n                const x = this.getAnchorX() || pAnchor.x;\n                const y = this.getAnchorY() || pAnchor.y;\n    \n                if (typeof x === 'number') {\n                    lastCamPosX = x;\n                }\n    \n                if (typeof y === 'number') {\n                    lastCamPosY = y;\n                }\n            }\n            \n            // Position to set the instance to.\n            let x;\n            let y;\n            if (isBackgroundX) {\n                x = pCameraX - pInstance.icon.width / 2;\n            } else {\n                let deltaX = pCameraX - lastCamPosX;\n                let distX = deltaX * horizontalSpeed;\n                x = pInstance.x + distX;\n            }\n    \n            if (isBackgroundY) {\n                y = pCameraY - pInstance.icon.height / 2;\n            } else {\n                let deltaY = pCameraY - lastCamPosY;\n                let distY = deltaY * verticalSpeed;\n                y = pInstance.y + distY;\n            }\n\n            // Set the position\n            pInstance.x = x;\n            pInstance.y = y;\n        }\n\n        // Logic cannot be ran on static background instances as they should not loop\n        if (!isBackgroundX && !isBackgroundY) {\n            if (infiniteHorizontal) {\n                if (lastCamPosX !== pCameraX) {\n                    // The start pos + total width\n                    const rightEnd = pInstance.x + pInstance.icon.width;\n                    // The start pos - total width / 6\n                    const leftEnd = Math.floor(pInstance.x - pInstance.icon.width / 6);\n\n                    if (pCameraX > rightEnd) {\n                        pInstance.x += pInstance.icon.width;\n                    } else if (pCameraX < leftEnd) {\n                        pInstance.x -= pInstance.icon.width;\n                    }\n                }\n            }\n\n            if (infiniteVertical) {\n                if (lastCamPosY !== pCameraY) {\n                    // The start pos + total height\n                    const bottomEnd = pInstance.y + pInstance.icon.height;\n                    // The start pos - total height / 6\n                    const topEnd = Math.floor(pInstance.y - pInstance.icon.height / 6);\n\n                    if (pCameraY > bottomEnd) {\n                        pInstance.y += pInstance.icon.height;\n                    } else if (pCameraY < topEnd) {\n                        pInstance.y -= pInstance.icon.height;\n                    }\n                }\n            }\n        }\n\n        const infinite = infiniteHorizontal || infiniteHorizontal;\n        // If this has children, we need to update the children when it moves.\n\n        if (pInstance._parallaxOldX !== pInstance.x || pInstance._parallaxOldY !== pInstance.y) {\n            if (infinite) {\n                this.handleOnRelocated(pInstance);\n            }\n            this.events.emit(pInstance, 'MoveEvent');\n        }\n\n        pInstance._parallaxOldX = pInstance.x; \n        pInstance._parallaxOldY = pInstance.y;\n    }\n    /**\n     * Handles the onRelocated event for instances. Moves their children in relativity to their position.\n     * @private\n     * @param {Diob | MapObject} pInstance - The instance to handle the event for.\n     */\n    handleOnRelocated(pInstance) {\n        const { verticalChildren, horizontalChildren } = this.instanceWeakMap.get(pInstance);\n\n        // Update the children's position when the parent moves\n        if (Array.isArray(verticalChildren)) {\n            verticalChildren.forEach((pChild) => {\n                pChild.x = pInstance.x + pChild.relativeX;\n                pChild.y = pInstance.y + pChild.relativeY;\n            });\n        }\n\n        if (Array.isArray(horizontalChildren)) {\n            horizontalChildren.forEach((pChild) => {\n                pChild.x = pInstance.x + pChild.relativeX;\n                pChild.y = pInstance.y + pChild.relativeY;\n            });\n        }\n    }\n}\n\nconst Parallax = new ParallaxSingleton();\nexport { Parallax };",
     "static": true,
     "longname": "/Users/doubleactii/Documents/Github/Parallax/src/parallax.mjs",
     "access": "public",
@@ -894,7 +1103,7 @@
     "lineNumber": 1
   },
   {
-    "__docId__": 58,
+    "__docId__": 66,
     "kind": "variable",
     "name": "Parallax",
     "memberof": "src/parallax.mjs",
@@ -905,7 +1114,7 @@
     "importPath": "parallax",
     "importStyle": "{Parallax}",
     "description": null,
-    "lineNumber": 472,
+    "lineNumber": 512,
     "undocument": true,
     "type": {
       "types": [
@@ -914,7 +1123,7 @@
     }
   },
   {
-    "__docId__": 59,
+    "__docId__": 67,
     "kind": "class",
     "name": "ParallaxSingleton",
     "memberof": "src/parallax.mjs",
@@ -925,13 +1134,13 @@
     "importPath": "parallax",
     "importStyle": null,
     "description": null,
-    "lineNumber": 4,
+    "lineNumber": 5,
     "pseudoExport": true,
     "undocument": true,
     "interface": false
   },
   {
-    "__docId__": 60,
+    "__docId__": 68,
     "kind": "member",
     "name": "version",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -939,7 +1148,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#version",
     "access": "public",
     "description": "The version of the module.",
-    "lineNumber": 8,
+    "lineNumber": 9,
     "type": {
       "types": [
         "*"
@@ -947,7 +1156,7 @@
     }
   },
   {
-    "__docId__": 61,
+    "__docId__": 69,
     "kind": "member",
     "name": "logger",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -955,7 +1164,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#logger",
     "access": "private",
     "description": "The logger module this module uses to log errors / logs",
-    "lineNumber": 13,
+    "lineNumber": 14,
     "type": {
       "nullable": null,
       "types": [
@@ -966,7 +1175,23 @@
     }
   },
   {
-    "__docId__": 62,
+    "__docId__": 70,
+    "kind": "member",
+    "name": "events",
+    "memberof": "src/parallax.mjs~ParallaxSingleton",
+    "static": false,
+    "longname": "src/parallax.mjs~ParallaxSingleton#events",
+    "access": "public",
+    "description": "The event emitter.",
+    "lineNumber": 18,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "__docId__": 71,
     "kind": "member",
     "name": "Layer",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -974,7 +1199,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#Layer",
     "access": "public",
     "description": "The layer class.",
-    "lineNumber": 18,
+    "lineNumber": 23,
     "type": {
       "nullable": null,
       "types": [
@@ -985,7 +1210,7 @@
     }
   },
   {
-    "__docId__": 63,
+    "__docId__": 72,
     "kind": "member",
     "name": "instances",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -993,7 +1218,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#instances",
     "access": "private",
     "description": "An set of instances that use the parallax system.",
-    "lineNumber": 24,
+    "lineNumber": 29,
     "type": {
       "nullable": null,
       "types": [
@@ -1004,7 +1229,7 @@
     }
   },
   {
-    "__docId__": 64,
+    "__docId__": 73,
     "kind": "member",
     "name": "instanceWeakMap",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1012,7 +1237,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#instanceWeakMap",
     "access": "private",
     "description": "Weakmap to store info on instances used in this module.",
-    "lineNumber": 30,
+    "lineNumber": 35,
     "type": {
       "nullable": null,
       "types": [
@@ -1023,7 +1248,7 @@
     }
   },
   {
-    "__docId__": 65,
+    "__docId__": 74,
     "kind": "member",
     "name": "lastCamPos",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1031,7 +1256,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#lastCamPos",
     "access": "private",
     "description": "The last position of the camera.",
-    "lineNumber": 36,
+    "lineNumber": 41,
     "type": {
       "nullable": null,
       "types": [
@@ -1044,7 +1269,7 @@
     }
   },
   {
-    "__docId__": 66,
+    "__docId__": 75,
     "kind": "member",
     "name": "cameraAnchor",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1052,7 +1277,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#cameraAnchor",
     "access": "private",
     "description": "The virtual position on the map where the layers look natural together.",
-    "lineNumber": 42,
+    "lineNumber": 47,
     "type": {
       "nullable": null,
       "types": [
@@ -1065,7 +1290,7 @@
     }
   },
   {
-    "__docId__": 67,
+    "__docId__": 76,
     "kind": "member",
     "name": "anchorYSet",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1073,7 +1298,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#anchorYSet",
     "access": "private",
     "description": "Whether the anchor y position is set.",
-    "lineNumber": 48,
+    "lineNumber": 53,
     "type": {
       "nullable": null,
       "types": [
@@ -1084,7 +1309,7 @@
     }
   },
   {
-    "__docId__": 68,
+    "__docId__": 77,
     "kind": "member",
     "name": "anchorXSet",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1092,7 +1317,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#anchorXSet",
     "access": "private",
     "description": "Whether the anchor x position is set.",
-    "lineNumber": 54,
+    "lineNumber": 59,
     "type": {
       "nullable": null,
       "types": [
@@ -1103,7 +1328,7 @@
     }
   },
   {
-    "__docId__": 69,
+    "__docId__": 78,
     "kind": "constructor",
     "name": "constructor",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1113,10 +1338,10 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#constructor",
     "access": "private",
     "description": "",
-    "lineNumber": 58
+    "lineNumber": 63
   },
   {
-    "__docId__": 70,
+    "__docId__": 79,
     "kind": "method",
     "name": "getCamPos",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1126,7 +1351,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#getCamPos",
     "access": "public",
     "description": "Gets the camera position.",
-    "lineNumber": 65,
+    "lineNumber": 70,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1144,7 +1369,7 @@
     "params": []
   },
   {
-    "__docId__": 71,
+    "__docId__": 80,
     "kind": "method",
     "name": "hasLastCamPos",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1154,7 +1379,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#hasLastCamPos",
     "access": "public",
     "description": "Whether the last camera position is set.",
-    "lineNumber": 76,
+    "lineNumber": 81,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1172,7 +1397,7 @@
     "params": []
   },
   {
-    "__docId__": 72,
+    "__docId__": 81,
     "kind": "method",
     "name": "setLastCamPos",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1182,7 +1407,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#setLastCamPos",
     "access": "public",
     "description": "Sets the last camera position.",
-    "lineNumber": 84,
+    "lineNumber": 89,
     "params": [
       {
         "nullable": null,
@@ -1208,7 +1433,7 @@
     "return": null
   },
   {
-    "__docId__": 73,
+    "__docId__": 82,
     "kind": "method",
     "name": "setCameraAnchor",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1218,7 +1443,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#setCameraAnchor",
     "access": "public",
     "description": "Sets the anchor position for the parallax system.",
-    "lineNumber": 92,
+    "lineNumber": 97,
     "params": [
       {
         "nullable": null,
@@ -1234,7 +1459,7 @@
     "return": null
   },
   {
-    "__docId__": 74,
+    "__docId__": 83,
     "kind": "method",
     "name": "setCameraAnchorX",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1244,7 +1469,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#setCameraAnchorX",
     "access": "public",
     "description": "Sets the anchor x position for the parallax system.",
-    "lineNumber": 100,
+    "lineNumber": 105,
     "params": [
       {
         "nullable": null,
@@ -1260,7 +1485,7 @@
     "return": null
   },
   {
-    "__docId__": 76,
+    "__docId__": 85,
     "kind": "method",
     "name": "setCameraAnchorY",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1270,7 +1495,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#setCameraAnchorY",
     "access": "public",
     "description": "Sets the anchor y position for the parallax system.",
-    "lineNumber": 108,
+    "lineNumber": 113,
     "params": [
       {
         "nullable": null,
@@ -1286,7 +1511,7 @@
     "return": null
   },
   {
-    "__docId__": 78,
+    "__docId__": 87,
     "kind": "method",
     "name": "getCameraAnchor",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1296,7 +1521,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#getCameraAnchor",
     "access": "public",
     "description": "Gets the anchor position.",
-    "lineNumber": 116,
+    "lineNumber": 121,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1314,7 +1539,7 @@
     "params": []
   },
   {
-    "__docId__": 79,
+    "__docId__": 88,
     "kind": "method",
     "name": "getAnchorX",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1324,7 +1549,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#getAnchorX",
     "access": "public",
     "description": "Gets the anchor x position.",
-    "lineNumber": 123,
+    "lineNumber": 128,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1343,7 +1568,7 @@
     "params": []
   },
   {
-    "__docId__": 80,
+    "__docId__": 89,
     "kind": "method",
     "name": "getAnchorY",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1353,7 +1578,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#getAnchorY",
     "access": "public",
     "description": "Gets the anchor y position.",
-    "lineNumber": 130,
+    "lineNumber": 135,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1372,7 +1597,7 @@
     "params": []
   },
   {
-    "__docId__": 81,
+    "__docId__": 90,
     "kind": "method",
     "name": "resetAnchor",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1382,12 +1607,12 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#resetAnchor",
     "access": "public",
     "description": "Resets the anchor position.",
-    "lineNumber": 136,
+    "lineNumber": 141,
     "params": [],
     "return": null
   },
   {
-    "__docId__": 82,
+    "__docId__": 91,
     "kind": "method",
     "name": "resetAnchorX",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1397,12 +1622,12 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#resetAnchorX",
     "access": "public",
     "description": "Resets the anchor x position.",
-    "lineNumber": 143,
+    "lineNumber": 148,
     "params": [],
     "return": null
   },
   {
-    "__docId__": 84,
+    "__docId__": 93,
     "kind": "method",
     "name": "resetAnchorY",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1412,12 +1637,12 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#resetAnchorY",
     "access": "public",
     "description": "Resets the anchor y position.",
-    "lineNumber": 150,
+    "lineNumber": 155,
     "params": [],
     "return": null
   },
   {
-    "__docId__": 86,
+    "__docId__": 95,
     "kind": "method",
     "name": "isAnchorXSet",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1427,7 +1652,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#isAnchorXSet",
     "access": "public",
     "description": "Whether the anchor x position is set.",
-    "lineNumber": 158,
+    "lineNumber": 163,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1445,7 +1670,7 @@
     "params": []
   },
   {
-    "__docId__": 87,
+    "__docId__": 96,
     "kind": "method",
     "name": "isAnchorYSet",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1455,7 +1680,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#isAnchorYSet",
     "access": "public",
     "description": "Whether the anchor y position is set.",
-    "lineNumber": 165,
+    "lineNumber": 170,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1473,7 +1698,7 @@
     "params": []
   },
   {
-    "__docId__": 88,
+    "__docId__": 97,
     "kind": "method",
     "name": "createLoopInstances",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1483,7 +1708,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#createLoopInstances",
     "access": "private",
     "description": "Creates two clones of the instance to loop infinitely.",
-    "lineNumber": 175,
+    "lineNumber": 180,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1522,7 +1747,7 @@
     }
   },
   {
-    "__docId__": 89,
+    "__docId__": 98,
     "kind": "method",
     "name": "toggleInfiniteHorizontal",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1532,7 +1757,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#toggleInfiniteHorizontal",
     "access": "private",
     "description": "Enables infinite looping for the horizontal plane.",
-    "lineNumber": 213,
+    "lineNumber": 201,
     "params": [
       {
         "nullable": null,
@@ -1543,22 +1768,12 @@
         "optional": false,
         "name": "pInstance",
         "description": "The instance to loop."
-      },
-      {
-        "nullable": null,
-        "types": [
-          "boolean"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "pBypassEvent",
-        "description": "Whether to bypass the onRelocated event."
       }
     ],
     "return": null
   },
   {
-    "__docId__": 90,
+    "__docId__": 99,
     "kind": "method",
     "name": "toggleInfiniteVertical",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1568,7 +1783,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#toggleInfiniteVertical",
     "access": "private",
     "description": "Enables infinite looping for the vertical plane.",
-    "lineNumber": 239,
+    "lineNumber": 233,
     "params": [
       {
         "nullable": null,
@@ -1579,22 +1794,12 @@
         "optional": false,
         "name": "pInstance",
         "description": "The instance to loop."
-      },
-      {
-        "nullable": null,
-        "types": [
-          "boolean"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "pBypassEvent",
-        "description": "Whether to bypass the onRelocated event."
       }
     ],
     "return": null
   },
   {
-    "__docId__": 91,
+    "__docId__": 100,
     "kind": "method",
     "name": "toggleInfinitePlanes",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1604,7 +1809,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#toggleInfinitePlanes",
     "access": "private",
     "description": "Toggle infinite looping for both the horizontal and vertical planes.",
-    "lineNumber": 263,
+    "lineNumber": 264,
     "params": [
       {
         "nullable": null,
@@ -1620,7 +1825,7 @@
     "return": null
   },
   {
-    "__docId__": 92,
+    "__docId__": 101,
     "kind": "method",
     "name": "add",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1630,31 +1835,43 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#add",
     "access": "private",
     "description": "Adds an instance to the parallax system.\nCall this first and then add your instance to the map.",
-    "lineNumber": 286,
+    "lineNumber": 290,
     "unknown": [
       {
         "tagName": "@prop",
-        "tagValue": "{number} pParallaxConfig.x - The x multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 1 to move with camera."
+        "tagValue": "{number} pConfig.horizontalSpeed - The x multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 1 to move with camera."
       },
       {
         "tagName": "@prop",
-        "tagValue": "{number} pParallaxConfig.y - The y multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 1 to move with camera."
+        "tagValue": "{number} pConfig.verticalSpeed - The y multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 1 to move with camera."
       },
       {
         "tagName": "@prop",
-        "tagValue": "{boolean} pParallaxConfig.infiniteHorizontal - Whether this instance will infiniteHorizontal endlessly."
+        "tagValue": "{boolean} [pConfig.infiniteHorizontal] - Whether this instance will infiniteHorizontal endlessly."
       },
       {
         "tagName": "@prop",
-        "tagValue": "{boolean} pParallaxConfig.infiniteVertical - Whether this instance will infiniteVertical endlessly."
+        "tagValue": "{boolean} [pConfig.infiniteVertical] - Whether this instance will infiniteVertical endlessly."
       },
       {
         "tagName": "@prop",
-        "tagValue": "{number} pParallaxConfig.cameraAnchorX - The x position of the camera to anchor this instance to."
+        "tagValue": "{number} [pConfig.cameraAnchorX] - The x position of the camera to anchor this instance to."
       },
       {
         "tagName": "@prop",
-        "tagValue": "{number} pParallaxConfig.cameraAnchorY - The y position of the camera to anchor this instance to.\n\n## The following is how the speed of the parallax multipliers are factored in.  \n(x | y) < 1 = faster behind the camera eg: (-> Player goes this way = Instance goes this way <-)  \n(x | y) > 1 faster against the camera eg: (-> Player goes this way = Instance goes this way ->)  \n(x | y) = 0 = static to the camera eg: (-> Player goes this way = Instance does nothing, and moves with the camera)   \n(x | y) = 1 = moves with the camera eg: (-> Player goes this way = Instance goes this way -> at position of camera)  "
+        "tagValue": "{number} [pConfig.cameraAnchorY] - The y position of the camera to anchor this instance to."
+      },
+      {
+        "tagName": "@prop",
+        "tagValue": "{boolean} [pConfig.ground] - If this instance is ground."
+      },
+      {
+        "tagName": "@prop",
+        "tagValue": "{number} [pConfig.groundY] - The y pos of the ground."
+      },
+      {
+        "tagName": "@prop",
+        "tagValue": "{string} [pConfig.groundMapname] - The ground mapname.\n\n## The following is how the speed of the parallax multipliers are factored in.  \n(x | y) < 1 = faster behind the camera eg: (-> Player goes this way = Instance goes this way <-)  \n(x | y) > 1 faster against the camera eg: (-> Player goes this way = Instance goes this way ->)  \n(x | y) = 0 = static to the camera eg: (-> Player goes this way = Instance does nothing, and moves with the camera)   \n(x | y) = 1 = moves with the camera eg: (-> Player goes this way = Instance goes this way -> at position of camera)  "
       }
     ],
     "params": [
@@ -1675,14 +1892,14 @@
         ],
         "spread": false,
         "optional": false,
-        "name": "pParallaxConfig",
+        "name": "pConfig",
         "description": "The parallax info that tells this module how to control this instance."
       }
     ],
     "return": null
   },
   {
-    "__docId__": 93,
+    "__docId__": 102,
     "kind": "method",
     "name": "init",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1692,31 +1909,31 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#init",
     "access": "private",
     "description": "Initializes this instance.",
-    "lineNumber": 321,
+    "lineNumber": 326,
     "unknown": [
       {
         "tagName": "@prop",
-        "tagValue": "{number} pParallaxConfig.x - The x multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 0 to move with camera."
+        "tagValue": "{number} pConfig.horizontalSpeed - The x multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 0 to move with camera."
       },
       {
         "tagName": "@prop",
-        "tagValue": "{number} pParallaxConfig.y - The y multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 0 to move with camera."
+        "tagValue": "{number} pConfig.verticalSpeed - The y multiplier for this instance. Controls how fast or slow this instance moves. -Infinity to Infinity. 0 to move with camera."
       },
       {
         "tagName": "@prop",
-        "tagValue": "{boolean} pParallaxConfig.infiniteHorizontal - Whether this instance will loop endlessly."
+        "tagValue": "{boolean} [pConfig.infiniteHorizontal] - Whether this instance will loop endlessly."
       },
       {
         "tagName": "@prop",
-        "tagValue": "{boolean} pParallaxConfig.infiniteVertical - Whether this instance will loop endlessly."
+        "tagValue": "{boolean} [pConfig.infiniteVertical] - Whether this instance will loop endlessly."
       },
       {
         "tagName": "@prop",
-        "tagValue": "{number} pParallaxConfig.cameraAnchorX - The x position of the camera to anchor this instance to."
+        "tagValue": "{number} [pConfig.cameraAnchorX] - The x position of the camera to anchor this instance to."
       },
       {
         "tagName": "@prop",
-        "tagValue": "{number} pParallaxConfig.cameraAnchorY - The y position of the camera to anchor this instance to."
+        "tagValue": "{number} [pConfig.cameraAnchorY] - The y position of the camera to anchor this instance to."
       }
     ],
     "params": [
@@ -1737,14 +1954,14 @@
         ],
         "spread": false,
         "optional": false,
-        "name": "pParallaxConfig",
+        "name": "pConfig",
         "description": "The parallax info that tells this module how to control this instance."
       }
     ],
     "return": null
   },
   {
-    "__docId__": 94,
+    "__docId__": 103,
     "kind": "method",
     "name": "remove",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1754,7 +1971,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#remove",
     "access": "public",
     "description": "Removes an instance to the parallax system.",
-    "lineNumber": 350,
+    "lineNumber": 361,
     "params": [
       {
         "nullable": null,
@@ -1770,7 +1987,7 @@
     "return": null
   },
   {
-    "__docId__": 95,
+    "__docId__": 104,
     "kind": "method",
     "name": "update",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1780,7 +1997,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#update",
     "access": "public",
     "description": "Updates the parallax system.",
-    "lineNumber": 366,
+    "lineNumber": 377,
     "params": [
       {
         "nullable": null,
@@ -1806,7 +2023,7 @@
     "return": null
   },
   {
-    "__docId__": 96,
+    "__docId__": 105,
     "kind": "method",
     "name": "updateInstance",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1816,7 +2033,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#updateInstance",
     "access": "private",
     "description": "Updates the instance's position based on the camera's position.",
-    "lineNumber": 382,
+    "lineNumber": 393,
     "params": [
       {
         "nullable": null,
@@ -1862,7 +2079,7 @@
     "return": null
   },
   {
-    "__docId__": 97,
+    "__docId__": 106,
     "kind": "method",
     "name": "handleOnRelocated",
     "memberof": "src/parallax.mjs~ParallaxSingleton",
@@ -1872,7 +2089,7 @@
     "longname": "src/parallax.mjs~ParallaxSingleton#handleOnRelocated",
     "access": "private",
     "description": "Handles the onRelocated event for instances. Moves their children in relativity to their position.",
-    "lineNumber": 462,
+    "lineNumber": 492,
     "params": [
       {
         "nullable": null,
@@ -1884,16 +2101,6 @@
         "optional": false,
         "name": "pInstance",
         "description": "The instance to handle the event for."
-      },
-      {
-        "nullable": null,
-        "types": [
-          "MapObject[]"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "pChildren",
-        "description": "An array of children belonging to the instance."
       }
     ],
     "return": null
@@ -1908,7 +2115,7 @@
   },
   {
     "kind": "packageJSON",
-    "content": "{\n  \"name\": \"parallax\",\n  \"version\": \"1.3.0\",\n  \"description\": \"A parallax module that will enable effortless integration of depth effects into your game.\",\n  \"main\": \"src/parallax.mjs\",\n  \"scripts\": {\n    \"test\": \"echo \\\"Error: no test specified\\\" && exit 1\",\n    \"build:rollup\": \"npx rollup -c\",\n    \"build:docs\": \"esdoc -c esdoc.json\",\n    \"build:dist\": \"npm run build:rollup && npm run build:docs\"\n  },\n  \"keywords\": [],\n  \"author\": \"https://github.com/doubleactii\",\n  \"license\": \"SEE LICENSE IN LICENSE.md\",\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"https://github.com/EvitcaStudio/Parallax\"\n  },\n  \"devDependencies\": {\n    \"@rollup/plugin-babel\": \"^6.0.4\",\n    \"@rollup/plugin-terser\": \"^0.4.4\",\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"rollup\": \"^4.14.1\",\n    \"rollup-plugin-banner2\": \"^1.2.3\",\n    \"rollup-plugin-cleandir\": \"^2.0.0\",\n    \"rollup-plugin-replace\": \"^2.2.0\"\n  }\n}\n",
+    "content": "{\n  \"name\": \"parallax\",\n  \"version\": \"1.3.1\",\n  \"description\": \"A parallax module that will enable effortless integration of depth effects into your game.\",\n  \"main\": \"src/parallax.mjs\",\n  \"scripts\": {\n    \"test\": \"echo \\\"Error: no test specified\\\" && exit 1\",\n    \"build:rollup\": \"npx rollup -c\",\n    \"build:docs\": \"esdoc -c esdoc.json\",\n    \"build:dist\": \"npm run build:rollup && npm run build:docs\"\n  },\n  \"keywords\": [],\n  \"author\": \"https://github.com/doubleactii\",\n  \"license\": \"SEE LICENSE IN LICENSE.md\",\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"https://github.com/EvitcaStudio/Parallax\"\n  },\n  \"devDependencies\": {\n    \"@rollup/plugin-babel\": \"^6.0.4\",\n    \"@rollup/plugin-terser\": \"^0.4.4\",\n    \"esdoc\": \"^1.1.0\",\n    \"esdoc-ecmascript-proposal-plugin\": \"^1.0.0\",\n    \"esdoc-standard-plugin\": \"^1.0.0\",\n    \"rollup\": \"^4.14.1\",\n    \"rollup-plugin-banner2\": \"^1.2.3\",\n    \"rollup-plugin-cleandir\": \"^2.0.0\",\n    \"rollup-plugin-replace\": \"^2.2.0\"\n  }\n}\n",
     "longname": "/Users/doubleactii/Documents/Github/Parallax/package.json",
     "name": "package.json",
     "static": true,

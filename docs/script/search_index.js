@@ -1,5 +1,11 @@
 window.esdocSearchIndex = [
   [
+    "parallax/src/events.mjs~eventemitter",
+    "class/src/events.mjs~EventEmitter.html",
+    "<span>EventEmitter</span> <span class=\"search-result-import-path\">parallax/src/events.mjs</span>",
+    "class"
+  ],
+  [
     "parallax/src/layer.mjs~layer",
     "class/src/layer.mjs~Layer.html",
     "<span>Layer</span> <span class=\"search-result-import-path\">parallax/src/layer.mjs</span>",
@@ -300,6 +306,42 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
+    "src/events.mjs",
+    "file/src/events.mjs.html",
+    "src/events.mjs",
+    "file"
+  ],
+  [
+    "src/events.mjs~eventemitter#constructor",
+    "class/src/events.mjs~EventEmitter.html#instance-constructor-constructor",
+    "src/events.mjs~EventEmitter#constructor",
+    "method"
+  ],
+  [
+    "src/events.mjs~eventemitter#emit",
+    "class/src/events.mjs~EventEmitter.html#instance-method-emit",
+    "src/events.mjs~EventEmitter#emit",
+    "method"
+  ],
+  [
+    "src/events.mjs~eventemitter#events",
+    "class/src/events.mjs~EventEmitter.html#instance-member-events",
+    "src/events.mjs~EventEmitter#events",
+    "member"
+  ],
+  [
+    "src/events.mjs~eventemitter#off",
+    "class/src/events.mjs~EventEmitter.html#instance-method-off",
+    "src/events.mjs~EventEmitter#off",
+    "method"
+  ],
+  [
+    "src/events.mjs~eventemitter#on",
+    "class/src/events.mjs~EventEmitter.html#instance-method-on",
+    "src/events.mjs~EventEmitter#on",
+    "method"
+  ],
+  [
     "src/layer.mjs",
     "file/src/layer.mjs.html",
     "src/layer.mjs",
@@ -394,6 +436,12 @@ window.esdocSearchIndex = [
     "class/src/parallax.mjs~ParallaxSingleton.html#instance-method-createLoopInstances",
     "src/parallax.mjs~ParallaxSingleton#createLoopInstances",
     "method"
+  ],
+  [
+    "src/parallax.mjs~parallaxsingleton#events",
+    "class/src/parallax.mjs~ParallaxSingleton.html#instance-member-events",
+    "src/parallax.mjs~ParallaxSingleton#events",
+    "member"
   ],
   [
     "src/parallax.mjs~parallaxsingleton#getanchorx",
