@@ -200,14 +200,15 @@ class ParallaxSingleton {
      */
     toggleInfiniteHorizontal(pInstance) {
         const [left, right] = this.createLoopInstances(pInstance);
+        const { x: scaleX } = pInstance.scale;
 
         // Position the left clone
-        left.x = pInstance.x - pInstance.icon.width;
+        left.x = pInstance.x - pInstance.icon.width * scaleX;
         left.y = pInstance.y;
         left.mapName = pInstance.mapName;
 
         // Position the right clone
-        right.x = pInstance.x + pInstance.icon.width;
+        right.x = pInstance.x + pInstance.icon.width * scaleX;
         right.y = pInstance.y;
         right.mapName = pInstance.mapName;
 
@@ -232,15 +233,16 @@ class ParallaxSingleton {
      */
     toggleInfiniteVertical(pInstance) {
         const [top, bottom] = this.createLoopInstances(pInstance);
+        const { y: scaleY } = pInstance.scale;
 
         // Position the left clone
         top.x = pInstance.x;
-        top.y = pInstance.y - pInstance.icon.height;
+        top.y = pInstance.y - pInstance.icon.height * scaleY;
         top.mapName = pInstance.mapName;
 
         // Position the right clone
         bottom.x = pInstance.x;
-        bottom.y = pInstance.y + pInstance.icon.height;
+        bottom.y = pInstance.y + pInstance.icon.height * scaleY;
         bottom.mapName = pInstance.mapName;
 
         // Store the clones in a temporary array
@@ -338,7 +340,8 @@ class ParallaxSingleton {
         const { ground, groundY, groundMapname, infiniteHorizontal, infiniteVertical } = pConfig;
 
         if (ground) {
-            pInstance.x = x - pInstance.icon.width / 2;
+            const { x: scaleX } = pInstance.scale;
+            pInstance.x = x - pInstance.icon.width * scaleX / 2;
             pInstance.y = groundY;
             pInstance.mapName = groundMapname;
         } else {
@@ -399,6 +402,7 @@ class ParallaxSingleton {
 
         let lastCamPosX = this.lastCamPos.x;
         let lastCamPosY = this.lastCamPos.y;
+        const { x: scaleX, y: scaleY } = pInstance.scale;
 
         if (!ground) {
             if (pAnchor) {
@@ -418,7 +422,7 @@ class ParallaxSingleton {
             let x;
             let y;
             if (isBackgroundX) {
-                x = pCameraX - pInstance.icon.width / 2;
+                x = pCameraX - pInstance.icon.width * scaleX / 2;
             } else {
                 let deltaX = pCameraX - lastCamPosX;
                 let distX = deltaX * horizontalSpeed;
@@ -426,7 +430,7 @@ class ParallaxSingleton {
             }
     
             if (isBackgroundY) {
-                y = pCameraY - pInstance.icon.height / 2;
+                y = pCameraY - pInstance.icon.height * scaleY / 2;
             } else {
                 let deltaY = pCameraY - lastCamPosY;
                 let distY = deltaY * verticalSpeed;
@@ -443,14 +447,14 @@ class ParallaxSingleton {
             if (infiniteHorizontal) {
                 if (lastCamPosX !== pCameraX) {
                     // The start pos + total width
-                    const rightEnd = pInstance.x + pInstance.icon.width;
+                    const rightEnd = pInstance.x + pInstance.icon.width * scaleX;
                     // The start pos - total width / 6
-                    const leftEnd = Math.floor(pInstance.x - pInstance.icon.width / 6);
+                    const leftEnd = Math.floor(pInstance.x - pInstance.icon.width * scaleX / 6);
 
                     if (pCameraX > rightEnd) {
-                        pInstance.x += pInstance.icon.width;
+                        pInstance.x += pInstance.icon.width * scaleX;
                     } else if (pCameraX < leftEnd) {
-                        pInstance.x -= pInstance.icon.width;
+                        pInstance.x -= pInstance.icon.width * scaleX;
                     }
                 }
             }
@@ -458,14 +462,14 @@ class ParallaxSingleton {
             if (infiniteVertical) {
                 if (lastCamPosY !== pCameraY) {
                     // The start pos + total height
-                    const bottomEnd = pInstance.y + pInstance.icon.height;
+                    const bottomEnd = pInstance.y + pInstance.icon.height * scaleY;
                     // The start pos - total height / 6
-                    const topEnd = Math.floor(pInstance.y - pInstance.icon.height / 6);
+                    const topEnd = Math.floor(pInstance.y - pInstance.icon.height * scaleY / 6);
 
                     if (pCameraY > bottomEnd) {
-                        pInstance.y += pInstance.icon.height;
+                        pInstance.y += pInstance.icon.height * scaleY;
                     } else if (pCameraY < topEnd) {
-                        pInstance.y -= pInstance.icon.height;
+                        pInstance.y -= pInstance.icon.height * scaleY;
                     }
                 }
             }
