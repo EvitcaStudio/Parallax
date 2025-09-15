@@ -1,37 +1,35 @@
 {
   "name": "parallax",
   "version": "2.0.0",
-  "description": "A parallax module that will enable effortless integration of depth effects into your game.",
+  "author": "https://github.com/doubleactii",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EvitcaStudio/Parallax"
+  },
   "main": "dist/es/index.js",
   "module": "dist/es/index.js",
-  "types": "dist/index.d.ts",
+  "devDependencies": {
+    "bun": "latest",
+    "bun-types": "latest",
+    "chalk": "^5.6.2",
+    "typedoc": "^0.25.0",
+    "typescript": "^5.0.0"
+  },
+  "description": "A parallax module that will enable effortless integration of depth effects into your game.",
+  "engines": {
+    "bun": ">=1.0.0"
+  },
   "files": [
     "dist/**/*",
     "src/**/*.ts"
   ],
+  "keywords": ["parallax", "game", "typescript", "bun"],
+  "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "bun run bun-build.ts && npx tsc --declaration --emitDeclarationOnly --declarationMap false --sourceMap false",
     "build:docs": "typedoc",
     "build:dist": "bun run build && bun run build:docs"
   },
-  "keywords": ["parallax", "game", "typescript", "bun"],
-  "author": "https://github.com/doubleactii",
-  "license": "SEE LICENSE IN LICENSE.md",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/EvitcaStudio/Parallax"
-  },
-  "devDependencies": {
-    "bun": "latest",
-    "bun-types": "latest",
-    "typescript": "^5.0.0",
-    "typedoc": "^0.25.0"
-  },
-  "engines": {
-    "bun": ">=1.0.0"
-  },
-  "dependencies": {
-    "chalk": "^5.6.2"
-  }
+  "types": "dist/index.d.ts"
 }
