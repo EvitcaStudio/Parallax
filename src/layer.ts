@@ -202,6 +202,22 @@ export class Layer {
     }
 
     /**
+     * Gets all instances currently in this parallax layer.
+     * @returns All instances currently in this parallax layer.
+     */
+    getInstances(): any[] {
+        return Array.from(this.config.instances);
+    }
+
+    /**
+     * Gets all backgrounds currently in this parallax layer.
+     * @returns All backgrounds currently in this parallax layer.
+     */
+    getBackgrounds(): any[] {
+        return Array.from(this.config.backgrounds);
+    }
+
+    /**
      * Removes the instance from the parallax layer.
      * @param pInstance - The instance to remove from the layer.
      */

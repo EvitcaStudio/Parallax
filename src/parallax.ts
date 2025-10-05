@@ -245,6 +245,9 @@ class ParallaxSingleton {
         const first = VYLO.newDiob('MapObject');
         const second = VYLO.newDiob('MapObject');
 
+        pInstance._parallaxChildren = [first, second];
+        pInstance.getParallaxChildren = () => [...pInstance._parallaxChildren];
+
         const children = [first, second];
 
         first.isCullable = false;
