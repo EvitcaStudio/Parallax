@@ -38,6 +38,8 @@ export interface ParallaxInstanceInfo extends ParallaxConfig {
 declare global {
     interface VYLOClient {
         getViewEye(): { x: number; y: number } | null;
+        getScreenSize?(): { width: number; height: number };
+        getPosFromScreen?(pX: number, pY: number, pResult?: { x: number; y: number }): { x: number; y: number };
     }
     
     interface VYLO {
@@ -236,28 +238,51 @@ class ParallaxSingleton {
     }
     
     /**
-     * Creates two clones of the instance to loop infinitely.
+     * Creates the requested number of clones for an infinitely tiled instance.
      * @param pInstance - The instance to base the clones off of.
-     * @returns An array of the two clones.
+     * @returns An array of the created clones.
      */
-    createLoopInstances(pInstance: any): any[] {
-        // Create a left and right clone
-        const first = VYLO.newDiob('MapObject');
-        const second = VYLO.newDiob('MapObject');
+    createLoopInstances(pInstance: any, pCount = 2): any[] {
+        const children = Array.from({ length: Math.max(0, pCount) }, () => VYLO.newDiob('MapObject'));
 
-        pInstance._parallaxChildren = [first, second];
+        pInstance._parallaxChildren = children;
         pInstance.getParallaxChildren = () => [...pInstance._parallaxChildren];
 
-        const children = [first, second];
-
-        first.isCullable = false;
-        second.isCullable = false;
-
-        // Make the left and right clone particle look the same as the initial instance
-        first.setAppearance(pInstance);
-        second.setAppearance(pInstance);
+        children.forEach((pChild) => {
+            pChild.isCullable = false;
+            pChild.setAppearance(pInstance);
+        });
 
         return children;
+    }
+
+    private getViewportWorldBounds(): { left: number; right: number; top: number; bottom: number } | null {
+        const client = VYLO?.Client;
+        if (!client?.getPosFromScreen) return null;
+
+        const mapView = (client as VYLOClient & {
+            mapView?: { width?: number; height?: number; clientWidth?: number; clientHeight?: number };
+        }).mapView;
+        const displayWidth = typeof window !== 'undefined' ? window.innerWidth : 0;
+        const displayHeight = typeof window !== 'undefined' ? window.innerHeight : 0;
+        const screen = displayWidth > 0 && displayHeight > 0
+            ? { width: displayWidth, height: displayHeight }
+            : mapView && (mapView.clientWidth || mapView.width) && (mapView.clientHeight || mapView.height)
+            ? {
+                width: mapView.clientWidth || mapView.width!,
+                height: mapView.clientHeight || mapView.height!
+            }
+            : client.getScreenSize?.();
+        if (!screen || screen.width <= 0 || screen.height <= 0) return null;
+
+        const topLeft = client.getPosFromScreen(0, 0);
+        const bottomRight = client.getPosFromScreen(screen.width, screen.height);
+        return {
+            left: Math.min(topLeft.x, bottomRight.x),
+            right: Math.max(topLeft.x, bottomRight.x),
+            top: Math.min(topLeft.y, bottomRight.y),
+            bottom: Math.max(topLeft.y, bottomRight.y)
+        };
     }
     
     /**
@@ -265,21 +290,26 @@ class ParallaxSingleton {
      * @param pInstance - The instance to loop.
      */
     toggleInfiniteHorizontal(pInstance: any): void {
-        const [left, right] = this.createLoopInstances(pInstance);
-        const { x: scaleX } = pInstance.scale;
+        const tileWidth = Math.abs(pInstance.icon.width * pInstance.scale.x);
+        if (tileWidth <= 0) return;
 
-        // Position the left clone
-        left.x = pInstance.x - pInstance.icon.width * scaleX;
-        left.y = pInstance.y;
-        left.mapName = pInstance.mapName;
+        const viewport = this.getViewportWorldBounds();
+        const firstOffset = viewport
+            ? Math.floor((viewport.left - pInstance.x) / tileWidth) - 1
+            : -1;
+        const lastOffset = viewport
+            ? Math.ceil((viewport.right - pInstance.x) / tileWidth) + 1
+            : 1;
+        const offsets = Array.from({ length: Math.max(0, lastOffset - firstOffset + 1) }, (_, index) => firstOffset + index)
+            .filter((pOffset) => pOffset !== 0);
+        const children = this.createLoopInstances(pInstance, offsets.length);
 
-        // Position the right clone
-        right.x = pInstance.x + pInstance.icon.width * scaleX;
-        right.y = pInstance.y;
-        right.mapName = pInstance.mapName;
+        children.forEach((pChild, pIndex) => {
+            pChild.x = pInstance.x + offsets[pIndex] * tileWidth;
+            pChild.y = pInstance.y;
+            pChild.mapName = pInstance.mapName;
+        });
 
-        // Store the clones in a temporary array
-        const children = [left, right];
         const parallaxConfig = this.instanceWeakMap.get(pInstance);
         if (parallaxConfig) {
             // Store the children
@@ -298,21 +328,26 @@ class ParallaxSingleton {
      * @param pInstance - The instance to loop.
      */
     toggleInfiniteVertical(pInstance: any): void {
-        const [top, bottom] = this.createLoopInstances(pInstance);
-        const { y: scaleY } = pInstance.scale;
+        const tileHeight = Math.abs(pInstance.icon.height * pInstance.scale.y);
+        if (tileHeight <= 0) return;
 
-        // Position the left clone
-        top.x = pInstance.x;
-        top.y = pInstance.y - pInstance.icon.height * scaleY;
-        top.mapName = pInstance.mapName;
+        const viewport = this.getViewportWorldBounds();
+        const firstOffset = viewport
+            ? Math.floor((viewport.top - pInstance.y) / tileHeight) - 1
+            : -1;
+        const lastOffset = viewport
+            ? Math.ceil((viewport.bottom - pInstance.y) / tileHeight) + 1
+            : 1;
+        const offsets = Array.from({ length: Math.max(0, lastOffset - firstOffset + 1) }, (_, index) => firstOffset + index)
+            .filter((pOffset) => pOffset !== 0);
+        const children = this.createLoopInstances(pInstance, offsets.length);
 
-        // Position the right clone
-        bottom.x = pInstance.x;
-        bottom.y = pInstance.y + pInstance.icon.height * scaleY;
-        bottom.mapName = pInstance.mapName;
+        children.forEach((pChild, pIndex) => {
+            pChild.x = pInstance.x;
+            pChild.y = pInstance.y + offsets[pIndex] * tileHeight;
+            pChild.mapName = pInstance.mapName;
+        });
 
-        // Store the clones in a temporary array
-        const children = [top, bottom];
         const parallaxConfig = this.instanceWeakMap.get(pInstance);
         if (parallaxConfig) {
             // Store the children
@@ -456,7 +491,8 @@ class ParallaxSingleton {
 
         let lastCamPosX = this.lastCamPos.x ?? 0;
         let lastCamPosY = this.lastCamPos.y ?? 0;
-        const { x: scaleX, y: scaleY } = pInstance.scale;
+        const tileWidth = Math.abs(pInstance.icon.width * pInstance.scale.x);
+        const tileHeight = Math.abs(pInstance.icon.height * pInstance.scale.y);
 
         if (!ground) {
             if (pAnchor) {
@@ -476,7 +512,7 @@ class ParallaxSingleton {
             let x: number;
             let y: number;
             if (isBackgroundX) {
-                x = pCameraX - pInstance.icon.width * scaleX / 2;
+                x = pCameraX - tileWidth / 2;
             } else {
                 let deltaX = pCameraX - lastCamPosX;
                 let distX = deltaX * horizontalSpeed;
@@ -484,7 +520,7 @@ class ParallaxSingleton {
             }
     
             if (isBackgroundY) {
-                y = pCameraY - pInstance.icon.height * scaleY / 2;
+                y = pCameraY - tileHeight / 2;
             } else {
                 let deltaY = pCameraY - lastCamPosY;
                 let distY = deltaY * verticalSpeed;
@@ -496,35 +532,59 @@ class ParallaxSingleton {
             pInstance.y = y;
         }
 
-        // Logic cannot be ran on static background instances as they should not loop
-        if (!isBackgroundX && !isBackgroundY) {
-            if (infiniteHorizontal) {
-                if (lastCamPosX !== pCameraX) {
-                    // The start pos + total width
-                    const rightEnd = pInstance.x + pInstance.icon.width * scaleX;
-                    // The start pos - total width / 6
-                    const leftEnd = Math.floor(pInstance.x - pInstance.icon.width * scaleX / 6);
+        // Background instances are positioned relative to the camera above,
+        // but their loop children still need to follow them. Keep the wrap
+        // checks independent so speed-0 backgrounds can participate in the
+        // same infinite tiling behavior as parallax-moving instances.
+        if (infiniteHorizontal) {
+            if (lastCamPosX !== pCameraX) {
+                if (tileWidth <= 0) return;
+                if (ground) {
+                    // Ground is world-anchored, so compare the complete tiled
+                    // group against the viewport instead of using the camera
+                    // center. This prevents wide views from exposing an edge.
+                    const viewport = this.getViewportWorldBounds();
+                    const horizontalChildren = parallaxConfig.horizontalChildren ?? [];
+                    const offsets = [0, ...horizontalChildren.map((pChild) => pChild.relativeX ?? 0)];
+                    const leftStart = pInstance.x + Math.min(...offsets);
+                    const rightEnd = pInstance.x + Math.max(...offsets) + tileWidth;
+
+                    if (viewport && viewport.right > rightEnd) {
+                        const tiles = Math.ceil((viewport.right - rightEnd) / tileWidth);
+                        pInstance.x += tiles * tileWidth;
+                    } else if (viewport && viewport.left < leftStart) {
+                        const tiles = Math.ceil((leftStart - viewport.left) / tileWidth);
+                        pInstance.x -= tiles * tileWidth;
+                    }
+                } else {
+                    const rightEnd = pInstance.x + tileWidth;
+                    const leftEnd = Math.floor(pInstance.x - tileWidth / 6);
 
                     if (pCameraX > rightEnd) {
-                        pInstance.x += pInstance.icon.width * scaleX;
+                        const tiles = Math.ceil((pCameraX - rightEnd) / tileWidth);
+                        pInstance.x += tiles * tileWidth;
                     } else if (pCameraX < leftEnd) {
-                        pInstance.x -= pInstance.icon.width * scaleX;
+                        const tiles = Math.ceil((leftEnd - pCameraX) / tileWidth);
+                        pInstance.x -= tiles * tileWidth;
                     }
                 }
             }
+        }
 
-            if (infiniteVertical) {
-                if (lastCamPosY !== pCameraY) {
-                    // The start pos + total height
-                    const bottomEnd = pInstance.y + pInstance.icon.height * scaleY;
-                    // The start pos - total height / 6
-                    const topEnd = Math.floor(pInstance.y - pInstance.icon.height * scaleY / 6);
+        if (infiniteVertical) {
+            if (lastCamPosY !== pCameraY) {
+                // The start pos + total height
+                if (tileHeight <= 0) return;
+                const bottomEnd = pInstance.y + tileHeight;
+                // The start pos - total height / 6
+                const topEnd = Math.floor(pInstance.y - tileHeight / 6);
 
-                    if (pCameraY > bottomEnd) {
-                        pInstance.y += pInstance.icon.height * scaleY;
-                    } else if (pCameraY < topEnd) {
-                        pInstance.y -= pInstance.icon.height * scaleY;
-                    }
+                if (pCameraY > bottomEnd) {
+                    const tiles = Math.ceil((pCameraY - bottomEnd) / tileHeight);
+                    pInstance.y += tiles * tileHeight;
+                } else if (pCameraY < topEnd) {
+                    const tiles = Math.ceil((topEnd - pCameraY) / tileHeight);
+                    pInstance.y -= tiles * tileHeight;
                 }
             }
         }
