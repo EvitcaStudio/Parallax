@@ -21,7 +21,7 @@ function logMessage(level: string, message: string): void {
 
 const startTime = Date.now();
 
-await Promise.all([
+const builds = await Promise.all([
     // ES Module version
     Bun.build({
         entrypoints: ['./src/index.ts'],
@@ -72,6 +72,12 @@ await Promise.all([
     })
 ]);
 
+for (const build of builds) {
+    if (!build.success) {
+        throw new AggregateError(build.logs, 'Parallax bundle generation failed');
+    }
+}
+
 // Replace VERSION_REPLACE_ME with actual version in all generated files
 const filesToUpdate = [
     `dist/index.js`,
@@ -81,13 +87,9 @@ const filesToUpdate = [
 ];
 
 for (const file of filesToUpdate) {
-    try {
-        const content = await Bun.file(file).text();
-        const updatedContent = content.replace(/VERSION_REPLACE_ME/g, packageJson.version);
-        await Bun.write(file, updatedContent);
-    } catch (error) {
-        // File might not exist, that's okay
-    }
+    const content = await Bun.file(file).text();
+    const updatedContent = content.replace(/VERSION_REPLACE_ME/g, packageJson.version);
+    await Bun.write(file, updatedContent);
 }
 
 const elapsed = Date.now() - startTime;

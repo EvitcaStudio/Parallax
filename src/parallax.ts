@@ -514,22 +514,23 @@ class ParallaxSingleton {
             if (isBackgroundX) {
                 x = pCameraX - tileWidth / 2;
             } else {
-                let deltaX = pCameraX - lastCamPosX;
-                let distX = deltaX * horizontalSpeed;
+                const deltaX = pCameraX - lastCamPosX;
+                const distX = deltaX * horizontalSpeed;
                 x = pInstance.x + distX;
             }
     
             if (isBackgroundY) {
                 y = pCameraY - tileHeight / 2;
             } else {
-                let deltaY = pCameraY - lastCamPosY;
-                let distY = deltaY * verticalSpeed;
+                const deltaY = pCameraY - lastCamPosY;
+                const distY = deltaY * verticalSpeed;
                 y = pInstance.y + distY;
             }
 
-            // Set the position
-            pInstance.x = x;
-            pInstance.y = y;
+            // Vylocity coordinate setters relocate the instance and refresh its
+            // sprite. Avoid invoking them for an axis that has not changed.
+            if (pInstance.x !== x) pInstance.x = x;
+            if (pInstance.y !== y) pInstance.y = y;
         }
 
         // Background instances are positioned relative to the camera above,
@@ -544,10 +545,18 @@ class ParallaxSingleton {
                     // group against the viewport instead of using the camera
                     // center. This prevents wide views from exposing an edge.
                     const viewport = this.getViewportWorldBounds();
-                    const horizontalChildren = parallaxConfig.horizontalChildren ?? [];
-                    const offsets = [0, ...horizontalChildren.map((pChild) => pChild.relativeX ?? 0)];
-                    const leftStart = pInstance.x + Math.min(...offsets);
-                    const rightEnd = pInstance.x + Math.max(...offsets) + tileWidth;
+                    const horizontalChildren = parallaxConfig.horizontalChildren;
+                    let minOffset = 0;
+                    let maxOffset = 0;
+                    if (horizontalChildren) {
+                        for (let index = 0; index < horizontalChildren.length; index++) {
+                            const offset = horizontalChildren[index].relativeX ?? 0;
+                            minOffset = Math.min(minOffset, offset);
+                            maxOffset = Math.max(maxOffset, offset);
+                        }
+                    }
+                    const leftStart = pInstance.x + minOffset;
+                    const rightEnd = pInstance.x + maxOffset + tileWidth;
 
                     if (viewport && viewport.right > rightEnd) {
                         const tiles = Math.ceil((viewport.right - rightEnd) / tileWidth);
@@ -616,15 +625,19 @@ class ParallaxSingleton {
         // Update the children's position when the parent moves
         if (Array.isArray(verticalChildren)) {
             verticalChildren.forEach((pChild) => {
-                pChild.x = pInstance.x + pChild.relativeX;
-                pChild.y = pInstance.y + pChild.relativeY;
+                const x = pInstance.x + pChild.relativeX;
+                if (pChild.x !== x) pChild.x = x;
+                const y = pInstance.y + pChild.relativeY;
+                if (pChild.y !== y) pChild.y = y;
             });
         }
 
         if (Array.isArray(horizontalChildren)) {
             horizontalChildren.forEach((pChild) => {
-                pChild.x = pInstance.x + pChild.relativeX;
-                pChild.y = pInstance.y + pChild.relativeY;
+                const x = pInstance.x + pChild.relativeX;
+                if (pChild.x !== x) pChild.x = x;
+                const y = pInstance.y + pChild.relativeY;
+                if (pChild.y !== y) pChild.y = y;
             });
         }
     }

@@ -19,16 +19,17 @@ export class EventEmitter {
      * @param pListener - The function to invoke when the event is triggered.
      */
     on(pInstance: object, pEventName: string, pListener: Function): void {
-        if (!this.events.has(pInstance)) {
-            this.events.set(pInstance, new Map());
+        let instanceEvents = this.events.get(pInstance);
+        if (!instanceEvents) {
+            instanceEvents = new Map();
+            this.events.set(pInstance, instanceEvents);
         }
-        const instanceEvents = this.events.get(pInstance);
-        if (instanceEvents) {
-            if (!instanceEvents.has(pEventName)) {
-                instanceEvents.set(pEventName, new Set());
-            }
-            instanceEvents.get(pEventName)?.add(pListener);
+        let listeners = instanceEvents.get(pEventName);
+        if (!listeners) {
+            listeners = new Set();
+            instanceEvents.set(pEventName, listeners);
         }
+        listeners.add(pListener);
     }
 
     /**
@@ -39,22 +40,14 @@ export class EventEmitter {
      * @param pListener - The function to remove from the event.
      */
     off(pInstance: object, pEventName: string, pListener: Function): void {
-        if (this.events.has(pInstance)) {
-            const instanceEvents = this.events.get(pInstance);
-            if (instanceEvents) {
-                if (instanceEvents.has(pEventName)) {
-                    instanceEvents.get(pEventName)?.delete(pListener);
-                    // Clean up the event if no listeners remain
-                    if (instanceEvents.get(pEventName)?.size === 0) {
-                        instanceEvents.delete(pEventName);
-                    }
-                }
-                // Clean up the pInstance if no events remain
-                if (instanceEvents.size === 0) {
-                    this.events.delete(pInstance);
-                }
-            }
+        const instanceEvents = this.events.get(pInstance);
+        if (!instanceEvents) return;
+        const listeners = instanceEvents.get(pEventName);
+        if (listeners) {
+            listeners.delete(pListener);
+            if (listeners.size === 0) instanceEvents.delete(pEventName);
         }
+        if (instanceEvents.size === 0) this.events.delete(pInstance);
     }
 
     /**
@@ -65,21 +58,19 @@ export class EventEmitter {
      * @param pData - The data to pass to the event listeners.
      */
     emit(pInstance: object, pEventName: string, pData?: any): void {
-        if (this.events.has(pInstance)) {
-            const instanceEvents = this.events.get(pInstance);
-            if (instanceEvents?.has(pEventName)) {
-                instanceEvents.get(pEventName)?.forEach((pListener) => {
-                    try {
-                        pListener({
-                            pInstance,
-                            event: pEventName,
-                            pData
-                        });
-                    } catch (error) {
-                        console.error(`Error in ${pEventName} pListener:`, error);
-                    }
-                });
-            }
+        const listeners = this.events.get(pInstance)?.get(pEventName);
+        if (listeners) {
+            listeners.forEach((pListener) => {
+                try {
+                    pListener({
+                        pInstance,
+                        event: pEventName,
+                        pData
+                    });
+                } catch (error) {
+                    console.error(`Error in ${pEventName} pListener:`, error);
+                }
+            });
         }
     }
 }

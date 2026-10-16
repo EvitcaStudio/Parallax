@@ -14,7 +14,7 @@
       "declarationMap": false,
       "sourceMap": false,
       "removeComments": false,
-      "noEmitOnError": false,
+      "noEmitOnError": true,
       "allowSyntheticDefaultImports": true,
       "resolveJsonModule": true
     },
