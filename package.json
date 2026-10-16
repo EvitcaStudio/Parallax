@@ -1,6 +1,6 @@
 {
   "name": "parallax",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "author": "https://github.com/doubleactii",
   "repository": {
     "type": "git",
@@ -23,7 +23,12 @@
     "dist/**/*",
     "src/**/*.ts"
   ],
-  "keywords": ["parallax", "game", "typescript", "bun"],
+  "keywords": [
+    "parallax",
+    "game",
+    "typescript",
+    "bun"
+  ],
   "license": "SEE LICENSE IN LICENSE.md",
   "scripts": {
     "test": "bun test ./tests",
